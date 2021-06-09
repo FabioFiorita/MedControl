@@ -130,14 +130,18 @@ struct AddMedicationSwiftUIView: View {
                 default:
                     break
            }
+            let notificationStatusnotificationStatus = scheduleNotification(medication: newMedication)
             
-            scheduleNotification(medication: newMedication)
-            
-            saveContext()
+            if(notificationStatusnotificationStatus) {
+                saveContext()
+            } else {
+                print("Erro na criação da notificação")
+            }
+                
         }
     }
     
-    private func scheduleNotification(medication: Medication) {
+    private func scheduleNotification(medication: Medication) -> Bool {
         
         notificationPermission()
         
@@ -146,13 +150,20 @@ struct AddMedicationSwiftUIView: View {
             content.body = "Tomar \(medication.name ?? "Medicamento")"
             content.sound = UNNotificationSound.default
         
-        guard let timeInterval = medication.date?.timeIntervalSinceNow else {return}
+        guard let timeInterval = medication.date?.timeIntervalSinceNow else {return false}
         
-        //try catch
+        guard timeInterval > 0 else {
+                return false
+            }
+        
+        
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         
         let request = UNNotificationRequest(identifier: medication.id!, content: content, trigger: trigger)
+        
         UNUserNotificationCenter.current().add(request)
+        
+        return true
         
     } //Func: scheduleNotification
     
