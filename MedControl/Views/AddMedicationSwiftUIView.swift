@@ -40,7 +40,7 @@ struct AddMedicationSwiftUIView: View {
         NavigationView{
         Form {
             
-            TextField("Nome do Medicamento", text: $name)
+            TextField("Nome do Medicamento", text: $name).disableAutocorrection(true)
             TextField("Quantidade na Caixa", text: $quantity).keyboardType(.numberPad)
             
             DatePicker("Data de Início", selection: $date, in: Date()...)
