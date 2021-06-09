@@ -18,7 +18,9 @@ struct MedicationDetailSwiftUIView: View {
     
     
     
+    
     var body: some View {
+        
         
         NavigationView{
             VStack(alignment: .leading) {
@@ -29,6 +31,7 @@ struct MedicationDetailSwiftUIView: View {
                         Text("Quantidade de medicamentos na caixa: \(medication.quantity)")
                         Button(action: {
                             refreshQuantity(medication)
+                            self.presentationMode.wrappedValue.dismiss()
                         }) {
                             Text("Renovar Medicamentos")
                                 .frame(width:350, height: 40, alignment: .center)
@@ -77,9 +80,14 @@ struct MedicationDetailSwiftUIView: View {
         withAnimation {
             
             medication.leftQuantity += medication.quantity
+            
             saveContext()
         }
     }
+    
+//    private func refreshNotifications(medication: Medication) {
+//        
+//    }
 }
 
 struct MedicationDetailSwiftUIView_Previews: PreviewProvider {
