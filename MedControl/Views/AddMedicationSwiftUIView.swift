@@ -101,7 +101,7 @@ struct AddMedicationSwiftUIView: View {
             newMedication.date = date
             newMedication.repeatPeriod = repeatPeriod
             newMedication.notes = notes
-            
+            newMedication.isSelected = false
             newMedication.nextDate = newMedication.date
             
             switch newMedication.repeatPeriod {
