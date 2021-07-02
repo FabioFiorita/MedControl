@@ -27,10 +27,20 @@ struct ContentView: View {
                     ForEach(medications, id: \.self) { (medication: Medication) in
                         HStack {
                             HStack {
-                                Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular)).onTapGesture {
-                                    updateQuantity(medication)
-                                    
-                                }
+                                Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular))
+                                    .foregroundColor(medication.isSelected ? Color.green : Color.primary)
+                                    .onTapGesture {
+                                        updateQuantity(medication)
+                                        withAnimation(.easeInOut(duration: 2.0)) {
+                                            medication.isSelected = true
+                                        }
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                                    withAnimation(.easeInOut(duration: 2)) {
+                                                        medication.isSelected = false
+                                                    }
+                                                }
+                                        
+                                    }
                                 VStack(alignment: .leading, spacing: 5) {
                                     Text(medication.name ?? "Untitled").font(.title)
                                     HStack {
@@ -61,7 +71,9 @@ struct ContentView: View {
                     }.onDelete(perform: deleteMedication)
                     
                     
+                    
                 } // List
+                
                 .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
                 .navigationBarItems(trailing:
                     Button(action: {
@@ -76,6 +88,7 @@ struct ContentView: View {
                 
                 
         }// Navigation View
+            
             .tabItem {
                     Image(systemName: "pills")
                     Text("Medicamentos")
