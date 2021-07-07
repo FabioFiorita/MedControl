@@ -14,9 +14,9 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var showModalAdd = false
     @Environment(\.presentationMode) var presentationMode
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Medication.date, ascending: true)])
-    
+    @FetchRequest(entity: Medication.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Medication.date, ascending: true)])
     private var medications: FetchedResults<Medication>
+    
     @ObservedObject var userSettings = UserSettings()
     
     
@@ -30,7 +30,7 @@ struct ContentView: View {
                                 Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular))
                                     .foregroundColor(medication.isSelected ? Color.green : Color.primary)
                                     .onTapGesture {
-                                        updateQuantity(medication)
+                                        updateQuantity(medication: medication)
                                         withAnimation(.easeInOut(duration: 2.0)) {
                                             medication.isSelected = true
                                         }
@@ -56,7 +56,7 @@ struct ContentView: View {
                                         }
                                         
                                     }
-                                    Text("Proximo: \(medication.nextDate ?? Date() ,formatter: itemFormatter)")
+                                    Text("Proximo: \(medication.date ?? Date() ,formatter: itemFormatter)")
                                         .font(.body)
                                         .fontWeight(.light)
                                 }
@@ -127,13 +127,13 @@ struct ContentView: View {
         }
     }
     
-    private func updateQuantity(_ medication: FetchedResults<Medication>.Element) {
+    private func updateQuantity(medication: FetchedResults<Medication>.Element) {
         withAnimation {
             if medication.leftQuantity > 1 {
                 medication.leftQuantity -= 1
-                medication.nextDate = Date(timeInterval: medication.repeatSeconds, since: medication.nextDate ?? Date())
+                medication.date = Date(timeInterval: medication.repeatSeconds, since: Date())
                 scheduleNotification(medication: medication)
-                //medication.timeInterval += medication.repeatSeconds
+                
             } else {
                 viewContext.delete(medication)
             }
