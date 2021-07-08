@@ -39,7 +39,8 @@ struct MedicationDetailSwiftUIView: View {
                                 .cornerRadius(10.0)
                                 .foregroundColor(.white)
                         }
-                }.padding()
+                }//MARK: VStack
+                .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(10.0)
                 
@@ -54,10 +55,10 @@ struct MedicationDetailSwiftUIView: View {
                 
                 WebView(url: "https://consultaremedios.com.br/b/\(medication.name ?? "")")
                 Spacer()
-            }
+            }// MARK: VStack
             .navigationBarTitle("\(medication.name ?? "Medicamento")", displayMode: .large)
             
-        }
+        }// MARK: NavigationView
         
         .navigationBarItems(trailing: Button(action: {
             self.showModal = true
@@ -67,7 +68,7 @@ struct MedicationDetailSwiftUIView: View {
             EditMedicationSwiftUIView(medication: medication)
         }
         )
-    }
+    }//MARK: Body
     
     
     private func saveContext() {

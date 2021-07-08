@@ -23,6 +23,8 @@
 		C14B995F25B4B2D3003C83B9 /* AddMedicationSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14B995E25B4B2D3003C83B9 /* AddMedicationSwiftUIView.swift */; };
 		C1531F7625C8CBF7008DADE2 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1531F7525C8CBF7008DADE2 /* UserSettings.swift */; };
 		C16F35A825BB88D80012F157 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C16F35A725BB88D80012F157 /* Launch Screen.storyboard */; };
+		C172FD002697AAE400F43629 /* TutorialSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C172FCFF2697AAE400F43629 /* TutorialSwiftUIView.swift */; };
+		C172FD022697B40E00F43629 /* EmailHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C172FD012697B40E00F43629 /* EmailHelper.swift */; };
 		C1B462CF25BA2D61008B6714 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B462CE25BA2D61008B6714 /* WebView.swift */; };
 		C1DEF4A025B4C3580052B593 /* MedicationDetailSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DEF49F25B4C3570052B593 /* MedicationDetailSwiftUIView.swift */; };
 		C1DEF4A425B4C5E40052B593 /* EditMedicationSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DEF4A325B4C5E40052B593 /* EditMedicationSwiftUIView.swift */; };
@@ -47,6 +49,8 @@
 		C14B995E25B4B2D3003C83B9 /* AddMedicationSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMedicationSwiftUIView.swift; sourceTree = "<group>"; };
 		C1531F7525C8CBF7008DADE2 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		C16F35A725BB88D80012F157 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		C172FCFF2697AAE400F43629 /* TutorialSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialSwiftUIView.swift; sourceTree = "<group>"; };
+		C172FD012697B40E00F43629 /* EmailHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailHelper.swift; sourceTree = "<group>"; };
 		C1B462CE25BA2D61008B6714 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		C1DEF49F25B4C3570052B593 /* MedicationDetailSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationDetailSwiftUIView.swift; sourceTree = "<group>"; };
 		C1DEF4A325B4C5E40052B593 /* EditMedicationSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMedicationSwiftUIView.swift; sourceTree = "<group>"; };
@@ -108,6 +112,7 @@
 				C10B905E25B4A8FE00936503 /* ContentView.swift */,
 				C1356E9C25B8A89400C7368D /* MapSwiftUIView.swift */,
 				C1356E9F25B8A89F00C7368D /* SettingsSwiftUIView.swift */,
+				C172FCFF2697AAE400F43629 /* TutorialSwiftUIView.swift */,
 				C1DEF49F25B4C3570052B593 /* MedicationDetailSwiftUIView.swift */,
 				C14B995E25B4B2D3003C83B9 /* AddMedicationSwiftUIView.swift */,
 				C1DEF4A325B4C5E40052B593 /* EditMedicationSwiftUIView.swift */,
@@ -123,6 +128,7 @@
 				C1356EAD25B8ADB200C7368D /* Landmark.swift */,
 				C1356EB025B8ADBD00C7368D /* LandmarkAnnotation.swift */,
 				C1531F7525C8CBF7008DADE2 /* UserSettings.swift */,
+				C172FD012697B40E00F43629 /* EmailHelper.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -220,11 +226,13 @@
 				C1356EB525B8AE5000C7368D /* MapView.swift in Sources */,
 				C1B462CF25BA2D61008B6714 /* WebView.swift in Sources */,
 				C14B995F25B4B2D3003C83B9 /* AddMedicationSwiftUIView.swift in Sources */,
+				C172FD002697AAE400F43629 /* TutorialSwiftUIView.swift in Sources */,
 				C1356E9D25B8A89400C7368D /* MapSwiftUIView.swift in Sources */,
 				C10B907825B4A9CA00936503 /* MedControl.xcdatamodeld in Sources */,
 				C14B995C25B4AB16003C83B9 /* Persistance.swift in Sources */,
 				C1356EB125B8ADBD00C7368D /* LandmarkAnnotation.swift in Sources */,
 				C10B905F25B4A8FE00936503 /* ContentView.swift in Sources */,
+				C172FD022697B40E00F43629 /* EmailHelper.swift in Sources */,
 				C1531F7625C8CBF7008DADE2 /* UserSettings.swift in Sources */,
 				C1356EA025B8A89F00C7368D /* SettingsSwiftUIView.swift in Sources */,
 				C10B905D25B4A8FE00936503 /* MedControlApp.swift in Sources */,
