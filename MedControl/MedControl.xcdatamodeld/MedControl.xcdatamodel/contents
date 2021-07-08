@@ -7,13 +7,12 @@
         <attribute name="isSelected" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="leftQuantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="nextDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="notes" optional="YES" attributeType="String"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="repeatPeriod" optional="YES" attributeType="String"/>
         <attribute name="repeatSeconds" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="Medication" positionX="-54" positionY="-9" width="128" height="194"/>
+        <element name="Medication" positionX="-54" positionY="-9" width="128" height="179"/>
     </elements>
 </model>
