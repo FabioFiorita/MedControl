@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    
+    let coloredNavAppearance = UINavigationBarAppearance()
     @Environment(\.managedObjectContext) private var viewContext
     @State private var showModalAdd = false
     @Environment(\.presentationMode) var presentationMode
@@ -19,75 +19,86 @@ struct ContentView: View {
     
     @ObservedObject var userSettings = UserSettings()
     
+    init(){
+            UITableView.appearance().backgroundColor = UIColor(Color("main"))
+//            coloredNavAppearance.configureWithOpaqueBackground()
+//            coloredNavAppearance.backgroundColor = UIColor(Color("main"))
+//            coloredNavAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.white)]
+//            coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.white)]
+//
+//            UINavigationBar.appearance().standardAppearance = coloredNavAppearance
+//            UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
+        }
     
     var body: some View {
         TabView {
             NavigationView {
-                List {
-                    ForEach(medications, id: \.self) { (medication: Medication) in
-                        HStack {
+                    List {
+                        ForEach(medications, id: \.self) { (medication: Medication) in
                             HStack {
-                                Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular))
-                                    .foregroundColor(medication.isSelected ? Color.green : Color.primary)
-                                    .onTapGesture {
-                                        updateQuantity(medication: medication)
-                                        withAnimation(.easeInOut(duration: 2.0)) {
-                                            medication.isSelected = true
-                                        }
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                                    withAnimation(.easeInOut(duration: 2)) {
-                                                        medication.isSelected = false
+                                HStack {
+                                    Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular))
+                                        .foregroundColor(medication.isSelected ? Color.green : Color.primary)
+                                        .onTapGesture {
+                                            updateQuantity(medication: medication)
+                                            withAnimation(.easeInOut(duration: 2.0)) {
+                                                medication.isSelected = true
+                                            }
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                                        withAnimation(.easeInOut(duration: 2)) {
+                                                            medication.isSelected = false
+                                                        }
                                                     }
-                                                }
-                                        
-                                    }
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text(medication.name ?? "Untitled").font(.title)
-                                    HStack {
-                                        Text("Medicamentos restantes:")
+                                            
+                                        }
+                                    VStack(alignment: .leading, spacing: 5) {
+                                        Text(medication.name ?? "Untitled").font(.title)
+                                        HStack {
+                                            Text("Medicamentos restantes:")
+                                                .font(.body)
+                                                .fontWeight(.light)
+                                            if Double(medication.leftQuantity) <= Double(medication.quantity) * (userSettings.limitMedication/100.0) {
+                                                Text("\(medication.leftQuantity)").font(.body)
+                                                    .fontWeight(.light).foregroundColor(.red)
+                                            } else {
+                                                Text("\(medication.leftQuantity)").font(.body)
+                                                    .fontWeight(.light)
+                                            }
+                                            
+                                        } //MARK: HStack
+                                        Text("Proximo: \(medication.date ?? Date() ,formatter: itemFormatter)")
                                             .font(.body)
                                             .fontWeight(.light)
-                                        if Double(medication.leftQuantity) <= Double(medication.quantity) * (userSettings.limitMedication/100.0) {
-                                            Text("\(medication.leftQuantity)").font(.body)
-                                                .fontWeight(.light).foregroundColor(.red)
-                                        } else {
-                                            Text("\(medication.leftQuantity)").font(.body)
-                                                .fontWeight(.light)
-                                        }
-                                        
-                                    }
-                                    Text("Proximo: \(medication.date ?? Date() ,formatter: itemFormatter)")
-                                        .font(.body)
-                                        .fontWeight(.light)
-                                }
-                            }
-                            Spacer()
-                            NavigationLink(destination: MedicationDetailSwiftUIView(medication: medication)) {
-                                EmptyView()
-                            }.frame(width: 0, height: 0)
-                                
-                        }
+                                    }// MARK: VStack
+                                }// MARK: HStack
+                                Spacer()
+                                NavigationLink(destination: MedicationDetailSwiftUIView(medication: medication)) {
+                                    EmptyView()
+                                }.frame(width: 0, height: 0)
+                                    
+                            }// MARK: HStack
+                            
+                        } //MARK: ForEach
+                        .onDelete(perform: deleteMedication)
                         
-                    }.onDelete(perform: deleteMedication)
-                    
-                    
-                    
-                } // List
-                
-                .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
-                .navigationBarItems(trailing:
-                    Button(action: {
-                        self.showModalAdd = true
-                    }) {
-                        Image(systemName: "plus").imageScale(.large)
-                        }.sheet(isPresented: self.$showModalAdd) {
-                            AddMedicationSwiftUIView()
-                        }
-                )
-                .listStyle(InsetGroupedListStyle())
+                        
+                        
+                    } // MARK: List
+                    .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
+                    .navigationBarItems(trailing:
+                        Button(action: {
+                            self.showModalAdd = true
+                        }) {
+                            Image(systemName: "plus").imageScale(.large)
+                            }.sheet(isPresented: self.$showModalAdd) {
+                                AddMedicationSwiftUIView()
+                            }
+                    )
+                    .listStyle(InsetGroupedListStyle())
+
                 
                 
-        }// Navigation View
+        }//MARK: Navigation View
             
             .tabItem {
                     Image(systemName: "pills")
@@ -103,9 +114,9 @@ struct ContentView: View {
                     Image(systemName: "gear")
                     Text("Ajustes")
                   }
-        }// TabView
+        }//MARK: TabView
         
-    }// Body
+    }//MARK: Body
     
     
     private func saveContext() {
@@ -131,7 +142,7 @@ struct ContentView: View {
         withAnimation {
             if medication.leftQuantity > 1 {
                 medication.leftQuantity -= 1
-                medication.date = Date(timeInterval: medication.repeatSeconds, since: Date())
+                medication.date = Date(timeInterval: medication.repeatSeconds, since: medication.date ?? Date())
                 scheduleNotification(medication: medication)
                 
             } else {
@@ -156,11 +167,11 @@ struct ContentView: View {
         UNUserNotificationCenter.current().add(request)
         
         
-    } //Func: scheduleNotification
+    }
     
     private let itemFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateStyle = .short
+        formatter.dateStyle = .full
         formatter.timeStyle = .short
         formatter.locale = Locale(identifier: "pt-BR")
         return formatter

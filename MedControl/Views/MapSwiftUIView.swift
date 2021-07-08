@@ -15,6 +15,8 @@ struct MapSwiftUIView: View {
     @State private var pharmacies: String = "Pharmacy"
     @State private var tapped: Bool = false
     
+
+    
     private func getNearByLandmarks() {
         
         let request = MKLocalSearch.Request()
@@ -69,6 +71,7 @@ struct MapSwiftUIView: View {
             }.animation(.spring())
                 .offset(y: calculateOffset())
             .padding(.vertical)
+            
             
         }.onAppear(perform: {
             self.getNearByLandmarks()

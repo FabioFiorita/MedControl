@@ -19,7 +19,7 @@ struct PlaceListView: View {
             HStack {
                 EmptyView()
             }.frame(width: UIScreen.main.bounds.size.width, height: 60)
-                .background(Color.gray)
+                .background(Color("main"))
                 .gesture(TapGesture()
                     .onEnded(self.onTap)
             )
