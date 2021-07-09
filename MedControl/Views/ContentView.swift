@@ -17,6 +17,7 @@ struct ContentView: View {
     @FetchRequest(entity: Medication.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Medication.date, ascending: true)])
     private var medications: FetchedResults<Medication>
     
+    
     @ObservedObject var userSettings = UserSettings()
     
     init(){
@@ -25,9 +26,9 @@ struct ContentView: View {
 //            coloredNavAppearance.backgroundColor = UIColor(Color("main"))
 //            coloredNavAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.white)]
 //            coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.white)]
-//
 //            UINavigationBar.appearance().standardAppearance = coloredNavAppearance
 //            UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
+        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         }
     
     var body: some View {
@@ -142,6 +143,11 @@ struct ContentView: View {
         withAnimation {
             if medication.leftQuantity > 1 {
                 medication.leftQuantity -= 1
+                
+                let hist = Historic(context: viewContext)
+                hist.dates = medication.date
+                hist.medication = medication
+                
                 medication.date = Date(timeInterval: medication.repeatSeconds, since: medication.date ?? Date())
                 scheduleNotification(medication: medication)
                 

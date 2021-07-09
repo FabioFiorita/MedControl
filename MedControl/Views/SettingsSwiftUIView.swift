@@ -15,6 +15,8 @@ struct SettingsSwiftUIView: View {
     
     var body: some View {
         NavigationView {
+            ZStack {
+                Color("main").ignoresSafeArea(.all)
             VStack(alignment: .leading, spacing: 50.0) {
                 VStack(alignment: .leading, spacing: 5.0) {
                     Toggle(isOn: $userSettings.limitNotification) {
@@ -89,11 +91,12 @@ struct SettingsSwiftUIView: View {
             .padding()
             //.background(Color(.secondarySystemBackground))
             .cornerRadius(10.0)
-        }
+        }//MARK: ZStack
+        }// MARK: NavigationView
         
-    }// MARK: NavigationView
+    }// MARK: Body
     
-}// MARK: Body
+}// MARK: View
 
 
 struct SettingsSwiftUIView_Previews: PreviewProvider {
