@@ -26,48 +26,58 @@ struct MedicationDetailSwiftUIView: View {
     
     var body: some View {
         NavigationView{
-            VStack(alignment: .leading) {
-                
-                VStack(alignment: .leading, spacing: 5.0){
-                    Text("Medicamentos restantes: \(medication.leftQuantity)")
-                    
-                        Text("Quantidade de medicamentos na caixa: \(medication.quantity)")
-                        Button(action: {
-                            refreshQuantity(medication)
-                            self.presentationMode.wrappedValue.dismiss()
-                        }) {
-                            Text("Renovar Medicamentos")
-                                .frame(width:350, height: 40, alignment: .center)
-                                .background(Color("main"))
-                                .cornerRadius(10.0)
-                                .foregroundColor(.white)
-                        }
-                }//MARK: VStack
-                .padding()
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(10.0)
-                
-                if medication.notes != "" {
-                    VStack(alignment: .leading, spacing: 5.0){
-                        Text("Notas").font(.title2)
-                        Text("\(medication.notes ?? "")").frame(width:350, height: 40, alignment: .center)
-                    }.padding()
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(10.0)
-                }
-                
-                List {
-                    ForEach(sortedDates.prefix(10) , id: \.self){ hist in
-                        HStack {
-                            Text("\(hist.dates ?? Date(),formatter: itemFormatter)" )
-                            Spacer()
-                            Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-                        }
+            ZStack {
+                Color("main").ignoresSafeArea(.all)
+                VStack(alignment: .leading) {
+                    VStack {
+                        VStack(alignment: .leading, spacing: 5.0){
+                            Text("Medicamentos restantes: \(medication.leftQuantity)")
+                            
+                                Text("Quantidade de medicamentos na caixa: \(medication.quantity)")
+                                Button(action: {
+                                    refreshQuantity(medication)
+                                    self.presentationMode.wrappedValue.dismiss()
+                                }) {
+                                    Text("Renovar Medicamentos")
+                                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                                        .padding()
+                                        .background(Color("main"))
+                                        .cornerRadius(10.0)
+                                        .foregroundColor(.white)
+                                }
+                        }//MARK: VStack
+                        .padding()
+                        .background(Color(.secondarySystemBackground))
+                        .cornerRadius(10.0)
                         
+                        if medication.notes != "" {
+                            VStack(alignment: .leading, spacing: 5.0){
+                                Text("Notas").font(.title2)
+                                Text("\(medication.notes ?? "")").frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                                    .padding()
+                            }.padding()
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(10.0)
+                        }
+
+                    }.padding()
+                    
+                    List {
+                        ForEach(sortedDates.prefix(10) , id: \.self){ hist in
+                            HStack {
+                                Text("\(hist.dates ?? Date(),formatter: itemFormatter)" )
+                                Spacer()
+                                Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                            }
+                            
+                        }
                     }
-                }
-                Spacer()
-            }// MARK: VStack
+                    
+                    Spacer()
+                }// MARK: VStack
+                
+            }
+            
             .navigationBarTitle("\(medication.name ?? "Medicamento")", displayMode: .large)
             
         }// MARK: NavigationView

@@ -26,9 +26,9 @@ struct ContentView: View {
 //            coloredNavAppearance.backgroundColor = UIColor(Color("main"))
 //            coloredNavAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.white)]
 //            coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.white)]
-//
 //            UINavigationBar.appearance().standardAppearance = coloredNavAppearance
 //            UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
+        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         }
     
     var body: some View {
