@@ -15,13 +15,16 @@ struct MedicationDetailSwiftUIView: View {
     @State private var showModal = false
     
     let medication: Medication
-    
-    
-    
+    private var arrayDate: [Historic] {
+        let aux = Array(medication.dates as? Set<Historic> ?? [])
+        return aux
+    }
+    private var sortedDates: [Historic] {
+        let aux = arrayDate.sorted(by: { $0.dates!.timeIntervalSinceNow > $1.dates!.timeIntervalSinceNow })
+        return aux
+    }
     
     var body: some View {
-        
-        
         NavigationView{
             VStack(alignment: .leading) {
                 
@@ -53,13 +56,21 @@ struct MedicationDetailSwiftUIView: View {
                     .cornerRadius(10.0)
                 }
                 
-                WebView(url: "https://consultaremedios.com.br/b/\(medication.name ?? "")")
+                List {
+                    ForEach(sortedDates.prefix(10) , id: \.self){ hist in
+                        HStack {
+                            Text("\(hist.dates ?? Date(),formatter: itemFormatter)" )
+                            Spacer()
+                            Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                        }
+                        
+                    }
+                }
                 Spacer()
             }// MARK: VStack
             .navigationBarTitle("\(medication.name ?? "Medicamento")", displayMode: .large)
             
         }// MARK: NavigationView
-        
         .navigationBarItems(trailing: Button(action: {
             self.showModal = true
         }) {
@@ -69,7 +80,7 @@ struct MedicationDetailSwiftUIView: View {
         }
         )
     }//MARK: Body
-    
+
     
     private func saveContext() {
         do {
@@ -92,6 +103,14 @@ struct MedicationDetailSwiftUIView: View {
 //        
 //    }
 }
+
+private let itemFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .full
+    formatter.timeStyle = .short
+    formatter.locale = Locale(identifier: "pt-BR")
+    return formatter
+}()
 
 struct MedicationDetailSwiftUIView_Previews: PreviewProvider {
     static let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
