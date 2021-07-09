@@ -182,11 +182,10 @@
 			};
 			buildConfigurationList = C10B905425B4A8FE00936503 /* Build configuration list for PBXProject "MedControl" */;
 			compatibilityVersion = "Xcode 9.3";
-			developmentRegion = en;
+			developmentRegion = pt;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
-				"pt-BR",
+				pt,
 				Base,
 			);
 			mainGroup = C10B905025B4A8FE00936503;
