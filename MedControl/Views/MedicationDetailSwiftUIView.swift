@@ -109,9 +109,7 @@ struct MedicationDetailSwiftUIView: View {
         }
     }
     
-//    private func refreshNotifications(medication: Medication) {
-//        
-//    }
+
 }
 
 private let itemFormatter: DateFormatter = {
