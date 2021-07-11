@@ -50,6 +50,7 @@ struct EditMedicationSwiftUIView: View {
                     }
                 }.onAppear {
                     pickerView = false
+                    self.repeatPeriod = "Nunca"
                 }
                 
                 Section{
@@ -105,7 +106,7 @@ struct EditMedicationSwiftUIView: View {
             
             switch newMedication.repeatPeriod {
             case "Nunca":
-                newMedication.repeatSeconds = 0.0
+                newMedication.repeatSeconds = 10.0
             case "15 minutos":
                 newMedication.repeatSeconds = 900.0
             case "30 minutos":
@@ -127,7 +128,6 @@ struct EditMedicationSwiftUIView: View {
             case "1 mês":
                 newMedication.repeatSeconds = 2419200.0
             default:
-                newMedication.repeatSeconds = 0.0
                 break
             }
             let notificationStatusnotificationStatus = scheduleNotification(medication: newMedication)

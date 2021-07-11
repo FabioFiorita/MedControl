@@ -51,6 +51,9 @@ struct AddMedicationSwiftUIView: View {
                         Text(periods).tag(periods)
                     }
                 }
+                .onAppear {
+                    self.repeatPeriod = "Nunca"
+                }
             
             
             Section{
@@ -106,7 +109,7 @@ struct AddMedicationSwiftUIView: View {
             
             switch newMedication.repeatPeriod {
             case "Nunca":
-                newMedication.repeatSeconds = 15.0
+                newMedication.repeatSeconds = 10.0
             case "15 minutos":
                 newMedication.repeatSeconds = 900.0
             case "30 minutos":
