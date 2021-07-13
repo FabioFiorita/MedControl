@@ -27,24 +27,25 @@ struct MedicationDetailSwiftUIView: View {
     var body: some View {
         NavigationView{
             ZStack {
-                Color("main").ignoresSafeArea(.all)
+                //Color("main").ignoresSafeArea(.all)
+                Color(.systemGray5)
                 VStack(alignment: .leading) {
                     VStack {
                         VStack(alignment: .leading, spacing: 5.0){
                             Text("Medicamentos restantes: \(medication.leftQuantity)")
                             
-                                Text("Quantidade de medicamentos na caixa: \(medication.quantity)")
-                                Button(action: {
-                                    refreshQuantity(medication)
-                                    self.presentationMode.wrappedValue.dismiss()
-                                }) {
-                                    Text("Renovar Medicamentos")
-                                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                                        .padding()
-                                        .background(Color("main"))
-                                        .cornerRadius(10.0)
-                                        .foregroundColor(.white)
-                                }
+                            Text("Quantidade de medicamentos na caixa: \(medication.quantity)")
+                            Button(action: {
+                                refreshQuantity(medication)
+                                self.presentationMode.wrappedValue.dismiss()
+                            }) {
+                                Text("Renovar Medicamentos")
+                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                                    .padding()
+                                    .background(Color("main"))
+                                    .cornerRadius(10.0)
+                                    .foregroundColor(.white)
+                            }
                         }//MARK: VStack
                         .padding()
                         .background(Color(.secondarySystemBackground))
@@ -59,7 +60,7 @@ struct MedicationDetailSwiftUIView: View {
                             .background(Color(.secondarySystemBackground))
                             .cornerRadius(10.0)
                         }
-
+                        
                     }.padding()
                     
                     List {
@@ -78,19 +79,19 @@ struct MedicationDetailSwiftUIView: View {
                 
             }
             
-            .navigationBarTitle("\(medication.name ?? "Medicamento")", displayMode: .large)
+            .navigationBarTitle("\(medication.name ?? "Medicamento")", displayMode: .inline)
             
         }// MARK: NavigationView
         .navigationBarItems(trailing: Button(action: {
             self.showModal = true
         }) {
-            Text("Editar")
+            Text("Editar").foregroundColor(.white)
         }.sheet(isPresented: self.$showModal) {
             EditMedicationSwiftUIView(medication: medication)
         }
         )
     }//MARK: Body
-
+    
     
     private func saveContext() {
         do {
@@ -109,12 +110,12 @@ struct MedicationDetailSwiftUIView: View {
         }
     }
     
-
+    
 }
 
 private let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateStyle = .full
+    formatter.dateStyle = .long
     formatter.timeStyle = .short
     formatter.locale = Locale(identifier: "pt-BR")
     return formatter

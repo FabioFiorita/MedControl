@@ -38,44 +38,44 @@ struct AddMedicationSwiftUIView: View {
     
     var body: some View {
         NavigationView{
-        Form {
-            
-            TextField("Nome do Medicamento", text: $name).disableAutocorrection(true)
-            TextField("Quantidade na Caixa", text: $quantity).keyboardType(.numberPad)
-            
-            DatePicker("Data de Início", selection: $date, in: Date()...)
+            Form {
                 
-            
+                TextField("Nome do Medicamento", text: $name).disableAutocorrection(true)
+                TextField("Quantidade na Caixa", text: $quantity).keyboardType(.numberPad)
+                
+                DatePicker("Data de Início", selection: $date, in: Date()...)
+                
+                
                 Picker(selection: $repeatPeriod, label: Text("Repetir")) {
                     ForEach(RepeatPeriod.periods, id: \.self) { periods in
                         Text(periods).tag(periods)
                     }
                 }
                 .onAppear {
-                    self.repeatPeriod = "Nunca"
+                    
                 }
-            
-            
-            Section{
-                Text("Notas")
-                TextEditor(text: $notes).padding()
+                
+                
+                Section{
+                    Text("Notas")
+                    TextEditor(text: $notes).padding()
+                }
+                
+                
+                
             }
-            
-            
-            
+            .navigationBarTitle(Text("Novo Medicamento"),displayMode: .inline)
+            .navigationBarItems(leading:
+                                    Button("Cancelar", action: {
+                                        self.presentationMode.wrappedValue.dismiss()
+                                    }).foregroundColor(.white)
+                                , trailing:
+                                    Button("Salvar", action: {
+                                        addMedication()
+                                        self.presentationMode.wrappedValue.dismiss()
+                                    }).foregroundColor(.white)
+            )
         }
-        .navigationBarTitle(Text("Novo Medicamento"),displayMode: .inline)
-        .navigationBarItems(leading:
-            Button("Cancelar", action: {
-                self.presentationMode.wrappedValue.dismiss()
-            })
-        , trailing:
-            Button("Salvar", action: {
-                addMedication()
-                self.presentationMode.wrappedValue.dismiss()
-            })
-        )
-    }
     }
     
     
@@ -130,9 +130,9 @@ struct AddMedicationSwiftUIView: View {
                 newMedication.repeatSeconds = 604800.0
             case "1 mês":
                 newMedication.repeatSeconds = 2419200.0
-                default:
-                    break
-           }
+            default:
+                break
+            }
             let notificationStatusnotificationStatus = scheduleNotification(medication: newMedication)
             
             if(notificationStatusnotificationStatus) {
@@ -140,7 +140,7 @@ struct AddMedicationSwiftUIView: View {
             } else {
                 print("Erro na criação da notificação")
             }
-                
+            
         }
     }
     
@@ -149,15 +149,15 @@ struct AddMedicationSwiftUIView: View {
         notificationPermission()
         
         let content = UNMutableNotificationContent()
-            content.title = "Lembrete"
-            content.body = "Tomar \(medication.name ?? "Medicamento")"
-            content.sound = UNNotificationSound.default
+        content.title = "Lembrete"
+        content.body = "Tomar \(medication.name ?? "Medicamento")"
+        content.sound = UNNotificationSound.default
         
         guard let timeInterval = medication.date?.timeIntervalSinceNow else {return false}
         
         guard timeInterval > 0 else {
-                return false
-            }
+            return false
+        }
         
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
@@ -172,22 +172,22 @@ struct AddMedicationSwiftUIView: View {
     
     private func notificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound])  {
-                success, error in
-                    if success {
-                        print("authorization granted")
-                    } else if let error = error {
-                        print(error.localizedDescription)
-                    }
+            success, error in
+            if success {
+                print("authorization granted")
+            } else if let error = error {
+                print(error.localizedDescription)
+            }
         }
     }
     
 } //AddMedicationSwiftUIView: View
-        
-            
 
 
-        
-    
+
+
+
+
 
 struct AddEditMedicationSwiftUIView_Previews: PreviewProvider {
     static var previews: some View {

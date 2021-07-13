@@ -7,7 +7,6 @@
     <entity name="Medication" representedClassName="Medication" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="String"/>
-        <attribute name="idNotification" optional="YES" attributeType="String"/>
         <attribute name="isSelected" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="leftQuantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -19,6 +18,6 @@
     </entity>
     <elements>
         <element name="Historic" positionX="-54" positionY="63" width="128" height="73"/>
-        <element name="Medication" positionX="-521.43359375" positionY="-64.05859375" width="128" height="208"/>
+        <element name="Medication" positionX="-521.43359375" positionY="-64.05859375" width="128" height="179"/>
     </elements>
 </model>

@@ -49,8 +49,11 @@ struct EditMedicationSwiftUIView: View {
                         Text(periods).tag(periods)
                     }
                 }.onAppear {
+                    if pickerView {
+                        self.repeatPeriod = "Nunca"
+                    }
                     pickerView = false
-                    self.repeatPeriod = "Nunca"
+                    
                 }
                 
                 Section{
@@ -70,12 +73,12 @@ struct EditMedicationSwiftUIView: View {
             .navigationBarItems(leading:
                                     Button("Cancelar", action: {
                                         self.presentationMode.wrappedValue.dismiss()
-                                    })
+                                    }).foregroundColor(.white)
                                 , trailing:
                                     Button("Salvar", action: {
                                         editMedication(newMedication: medication)
                                         self.presentationMode.wrappedValue.dismiss()
-                                    })
+                                    }).foregroundColor(.white)
             )
         }
     }

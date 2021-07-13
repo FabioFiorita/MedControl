@@ -18,7 +18,7 @@ class EmailHelper: NSObject, MFMailComposeViewControllerDelegate {
         if !MFMailComposeViewController.canSendMail() {
             print("No mail account found")
             // Todo: Add a way to show banner to user about no mail app found or configured
-            // Utilities.showErrorBanner(title: "No mail account found", subtitle: "Please setup a mail account")
+             //Utilities.showErrorBanner(title: "No mail account found", subtitle: "Please setup a mail account")
             return //EXIT
         }
         
@@ -40,6 +40,6 @@ class EmailHelper: NSObject, MFMailComposeViewControllerDelegate {
         //(UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window?.rootViewController
         
         // OR If you use SwiftUI 2.0 based WindowGroup try this one
-         UIApplication.shared.windows.first?.rootViewController
+        UIApplication.shared.windows.first?.rootViewController
     }
 }

@@ -15,7 +15,7 @@ struct MapSwiftUIView: View {
     @State private var pharmacies: String = "Pharmacy"
     @State private var tapped: Bool = false
     
-
+    
     
     private func getNearByLandmarks() {
         
@@ -56,20 +56,20 @@ struct MapSwiftUIView: View {
             MapView(landmarks: landmarks).ignoresSafeArea(.all)
             
             
-//            TextField("Pesquisar", text: $search, onEditingChanged: { _ in })
-//            {
-//                // commit
-//                self.getNearByLandmarks()
-//            }.textFieldStyle(RoundedBorderTextFieldStyle())
-//                .padding()
-//                .offset(y: 44)
+            //            TextField("Pesquisar", text: $search, onEditingChanged: { _ in })
+            //            {
+            //                // commit
+            //                self.getNearByLandmarks()
+            //            }.textFieldStyle(RoundedBorderTextFieldStyle())
+            //                .padding()
+            //                .offset(y: 44)
             
             
             PlaceListView(landmarks: self.landmarks) {
                 // on tap
                 self.tapped.toggle()
             }.animation(.spring())
-                .offset(y: calculateOffset())
+            .offset(y: calculateOffset())
             .padding(.vertical)
             
             

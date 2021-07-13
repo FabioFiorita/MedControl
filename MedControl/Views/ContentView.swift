@@ -21,100 +21,108 @@ struct ContentView: View {
     @ObservedObject var userSettings = UserSettings()
     
     init(){
-            UITableView.appearance().backgroundColor = UIColor(Color("main"))
-//            coloredNavAppearance.configureWithOpaqueBackground()
-//            coloredNavAppearance.backgroundColor = UIColor(Color("main"))
-//            coloredNavAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.white)]
-//            coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.white)]
-//            UINavigationBar.appearance().standardAppearance = coloredNavAppearance
-//            UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
-        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        }
+        //UITableView.appearance().backgroundColor = UIColor(Color("main"))
+        UITableView.appearance().backgroundColor = UIColor(Color(.systemGray5))
+        
+                    coloredNavAppearance.configureWithOpaqueBackground()
+                    coloredNavAppearance.backgroundColor = UIColor(Color("main"))
+                    coloredNavAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.white)]
+                    coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.white)]
+                    UINavigationBar.appearance().standardAppearance = coloredNavAppearance
+                    UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
+
+        //UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        
+    }
     
     var body: some View {
         TabView {
             NavigationView {
-                    List {
-                        ForEach(medications, id: \.self) { (medication: Medication) in
+                List {
+                    ForEach(medications, id: \.self) { (medication: Medication) in
+                        HStack {
                             HStack {
-                                HStack {
-                                    Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular))
-                                        .foregroundColor(medication.isSelected ? Color.green : Color.primary)
-                                        .onTapGesture {
-                                            updateQuantity(medication: medication)
-                                            withAnimation(.easeInOut(duration: 2.0)) {
-                                                medication.isSelected = true
-                                            }
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                                        withAnimation(.easeInOut(duration: 2)) {
-                                                            medication.isSelected = false
-                                                        }
-                                                    }
-                                            
+                                Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular))
+                                    .foregroundColor(medication.isSelected ? Color.green : Color.primary)
+                                    .onTapGesture {
+                                        updateQuantity(medication: medication)
+                                        withAnimation(.easeInOut(duration: 2.0)) {
+                                            medication.isSelected = true
                                         }
-                                    VStack(alignment: .leading, spacing: 5) {
-                                        Text(medication.name ?? "Untitled").font(.title)
-                                        HStack {
-                                            Text("Medicamentos restantes:")
-                                                .font(.body)
-                                                .fontWeight(.light)
-                                            if Double(medication.leftQuantity) <= Double(medication.quantity) * (userSettings.limitMedication/100.0) {
-                                                Text("\(medication.leftQuantity)").font(.body)
-                                                    .fontWeight(.light).foregroundColor(.red)
-                                            } else {
-                                                Text("\(medication.leftQuantity)").font(.body)
-                                                    .fontWeight(.light)
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                            withAnimation(.easeInOut(duration: 2)) {
+                                                medication.isSelected = false
                                             }
-                                            
-                                        } //MARK: HStack
-                                        Text("Proximo: \(medication.date ?? Date() ,formatter: itemFormatter)")
+                                        }
+                                        
+                                    }
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text(medication.name ?? "Untitled").font(.title)
+                                    HStack {
+                                        Text("Medicamentos restantes:")
                                             .font(.body)
                                             .fontWeight(.light)
-                                    }// MARK: VStack
-                                }// MARK: HStack
-                                Spacer()
-                                NavigationLink(destination: MedicationDetailSwiftUIView(medication: medication)) {
-                                    EmptyView()
-                                }.frame(width: 0, height: 0)
-                                    
+                                            
+                                        if Double(medication.leftQuantity) <= Double(medication.quantity) * (userSettings.limitMedication/100.0) {
+                                            Text("\(medication.leftQuantity)").font(.body)
+                                                .fontWeight(.light).foregroundColor(.red)
+                                        } else {
+                                            Text("\(medication.leftQuantity)").font(.body)
+                                                .fontWeight(.light)
+                                                
+                                        }
+                                        
+                                    } //MARK: HStack
+                                    Text("Proximo: \(medication.date ?? Date() ,formatter: itemFormatter)")
+                                        .font(.body)
+                                        .fontWeight(.light)
+                                        
+                                }// MARK: VStack
+                                
                             }// MARK: HStack
+                            Spacer()
+                            NavigationLink(destination: MedicationDetailSwiftUIView(medication: medication)) {
+                                EmptyView()
+                            }.frame(width: 0, height: 0)
                             
-                        } //MARK: ForEach
-                        .onDelete(perform: deleteMedication)
+                        }// MARK: HStack
                         
-                        
-                        
-                    } // MARK: List
-                    .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
-                    .navigationBarItems(trailing:
-                        Button(action: {
-                            self.showModalAdd = true
-                        }) {
-                            Image(systemName: "plus").imageScale(.large)
-                            }.sheet(isPresented: self.$showModalAdd) {
-                                AddMedicationSwiftUIView()
-                            }
-                    )
-                    .listStyle(InsetGroupedListStyle())
-
+                    } //MARK: ForEach
+                    .onDelete(perform: deleteMedication)
+                    
+                    
+                    
+                } // MARK: List
+                .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
+                .navigationBarItems(trailing:
+                                        Button(action: {
+                                            self.showModalAdd = true
+                                        }) {
+                                            Image(systemName: "plus").imageScale(.large).foregroundColor(.white)
+                                        }.sheet(isPresented: self.$showModalAdd) {
+                                            AddMedicationSwiftUIView()
+                                        }
+                )
+                .listStyle(InsetGroupedListStyle())
                 
                 
-        }//MARK: Navigation View
-            
+                
+            }//MARK: Navigation View
+            .accentColor(.white)
             .tabItem {
-                    Image(systemName: "pills")
-                    Text("Medicamentos")
-                  }
+                Image(systemName: "pills")
+                Text("Medicamentos")
+            }
             MapSwiftUIView()
-            .tabItem {
+                .tabItem {
                     Image(systemName: "map")
                     Text("Mapa")
-                  }
+                }
             SettingsSwiftUIView()
-            .tabItem {
+                .tabItem {
                     Image(systemName: "gear")
                     Text("Ajustes")
-                  }
+                }
         }//MARK: TabView
         
     }//MARK: Body
@@ -148,7 +156,8 @@ struct ContentView: View {
                 hist.dates = medication.date
                 hist.medication = medication
                 
-                medication.date = Date(timeInterval: medication.repeatSeconds, since: medication.date ?? Date())
+                //medication.date = Date(timeInterval: medication.repeatSeconds, since: medication.date ?? Date())
+                medication.date = Date(timeIntervalSinceNow: medication.repeatSeconds)
                 scheduleNotification(medication: medication)
                 
             } else {
@@ -161,15 +170,15 @@ struct ContentView: View {
     private func scheduleNotification(medication: Medication) {
         
         let content = UNMutableNotificationContent()
-            content.title = "Lembrete"
+        content.title = "Lembrete"
         content.body = "Tomar \(medication.name ?? "Medicamento")"
-            content.sound = UNNotificationSound.default
-        medication.idNotification = String(Date().timeIntervalSince1970)
+        content.sound = UNNotificationSound.default
+        //medication.idNotification = String(Date().timeIntervalSince1970)
         
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: medication.repeatSeconds, repeats: false)
         
-        let request = UNNotificationRequest(identifier: medication.idNotification!, content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: medication.id!, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request)
         
         
