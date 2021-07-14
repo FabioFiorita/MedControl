@@ -21,13 +21,14 @@ struct EditMedicationSwiftUIView: View {
     @State private var date = Date()
     @State private var repeatPeriod = ""
     @State private var notes = ""
+    @State private var leftQuantity = ""
     @State private var pickerView = true
     
     
     var body: some View {
         NavigationView{
             Form {
-                TextField("Nome do medicamento", text: $name)
+                TextField("Nome do Medicamento", text: $name)
                     .onAppear {
                         if pickerView {
                             self.name = self.medication.name != nil ? "\(self.medication.name!)" : ""
@@ -35,14 +36,21 @@ struct EditMedicationSwiftUIView: View {
                     }
                     .disableAutocorrection(true)
                 
-                TextField("Quantidade na caixa", text: $quantity).keyboardType(.numberPad)
+                TextField("Quantidade Restante", text: $leftQuantity).keyboardType(.numberPad)
+                    .onAppear {
+                        if pickerView {
+                            self.leftQuantity = (self.medication.leftQuantity != 0) ? "\(self.medication.leftQuantity)" : ""
+                        }
+                    }
+                
+                TextField("Quantidade na Caixa", text: $quantity).keyboardType(.numberPad)
                     .onAppear {
                         if pickerView {
                             self.quantity = (self.medication.quantity != 0) ? "\(self.medication.quantity)" : ""
                         }
                     }
                 
-                DatePicker("Data", selection: $date, in: Date()...)
+                DatePicker("Data de Início", selection: $date, in: Date()...)
                 
                 Picker(selection: $repeatPeriod, label: Text("Repetir")) {
                     ForEach(RepeatPeriod.periods, id: \.self) { periods in
@@ -96,11 +104,13 @@ struct EditMedicationSwiftUIView: View {
         withAnimation {
             
             newMedication.name = name
-            if let quantity = Int32(quantity) {
-                newMedication.quantity = quantity
+            if let leftQuantity = Int32(leftQuantity) {
+                newMedication.leftQuantity = leftQuantity
             }
-            
-            newMedication.leftQuantity = newMedication.quantity
+            if let quantity = Int32(quantity) {
+                    newMedication.quantity = quantity
+                }
+
             newMedication.date = date
             newMedication.repeatPeriod = repeatPeriod
             newMedication.notes = notes

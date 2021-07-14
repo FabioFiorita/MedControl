@@ -32,7 +32,9 @@ struct AddMedicationSwiftUIView: View {
     @State private var date = Date()
     @State private var repeatPeriod = ""
     @State private var notes = ""
+    @State private var leftQuantity = ""
     @State var showAlert = false
+    
     
     @ObservedObject var userSettings = UserSettings()
     
@@ -41,6 +43,7 @@ struct AddMedicationSwiftUIView: View {
             Form {
                 
                 TextField("Nome do Medicamento", text: $name).disableAutocorrection(true)
+                TextField("Quantidade Restante", text: $leftQuantity).keyboardType(.numberPad)
                 TextField("Quantidade na Caixa", text: $quantity).keyboardType(.numberPad)
                 
                 DatePicker("Data de Início", selection: $date, in: Date()...)
@@ -50,9 +53,6 @@ struct AddMedicationSwiftUIView: View {
                     ForEach(RepeatPeriod.periods, id: \.self) { periods in
                         Text(periods).tag(periods)
                     }
-                }
-                .onAppear {
-                    
                 }
                 
                 
@@ -96,11 +96,15 @@ struct AddMedicationSwiftUIView: View {
         withAnimation {
             let newMedication = Medication(context: viewContext)
             newMedication.name = name
+            if let leftQuantity = Int32(leftQuantity) {
+                newMedication.leftQuantity = leftQuantity
+            }
             if let quantity = Int32(quantity) {
                 newMedication.quantity = quantity
             }
+            
+            
             newMedication.id = String(Date().timeIntervalSince1970)
-            newMedication.leftQuantity = newMedication.quantity
             newMedication.date = date
             newMedication.repeatPeriod = repeatPeriod
             newMedication.notes = notes
