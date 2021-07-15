@@ -97,10 +97,10 @@ struct AddMedicationSwiftUIView: View {
             let newMedication = Medication(context: viewContext)
             newMedication.name = name
             if let leftQuantity = Int32(leftQuantity) {
-                newMedication.leftQuantity = leftQuantity
+                newMedication.remainingQuantity = leftQuantity
             }
             if let quantity = Int32(quantity) {
-                newMedication.quantity = quantity
+                newMedication.boxQuantity = quantity
             }
             
             

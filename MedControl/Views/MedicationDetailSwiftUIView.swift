@@ -32,9 +32,9 @@ struct MedicationDetailSwiftUIView: View {
                 VStack(alignment: .leading) {
                     VStack {
                         VStack(alignment: .leading, spacing: 5.0){
-                            Text("Medicamentos restantes: \(medication.leftQuantity)")
+                            Text("Medicamentos restantes: \(medication.remainingQuantity)")
                             
-                            Text("Quantidade de medicamentos na caixa: \(medication.quantity)")
+                            Text("Quantidade de medicamentos na caixa: \(medication.boxQuantity)")
                             Button(action: {
                                 refreshQuantity(medication)
                                 self.presentationMode.wrappedValue.dismiss()
@@ -104,7 +104,7 @@ struct MedicationDetailSwiftUIView: View {
     private func refreshQuantity(_ medication: FetchedResults<Medication>.Element) {
         withAnimation {
             
-            medication.leftQuantity += medication.quantity
+            medication.remainingQuantity += medication.boxQuantity
             
             saveContext()
         }

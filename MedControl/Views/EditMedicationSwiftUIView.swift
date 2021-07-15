@@ -39,14 +39,14 @@ struct EditMedicationSwiftUIView: View {
                 TextField("Quantidade Restante", text: $leftQuantity).keyboardType(.numberPad)
                     .onAppear {
                         if pickerView {
-                            self.leftQuantity = (self.medication.leftQuantity != 0) ? "\(self.medication.leftQuantity)" : ""
+                            self.leftQuantity = (self.medication.remainingQuantity != 0) ? "\(self.medication.remainingQuantity)" : ""
                         }
                     }
                 
                 TextField("Quantidade na Caixa", text: $quantity).keyboardType(.numberPad)
                     .onAppear {
                         if pickerView {
-                            self.quantity = (self.medication.quantity != 0) ? "\(self.medication.quantity)" : ""
+                            self.quantity = (self.medication.boxQuantity != 0) ? "\(self.medication.boxQuantity)" : ""
                         }
                     }
                 
@@ -105,10 +105,10 @@ struct EditMedicationSwiftUIView: View {
             
             newMedication.name = name
             if let leftQuantity = Int32(leftQuantity) {
-                newMedication.leftQuantity = leftQuantity
+                newMedication.remainingQuantity = leftQuantity
             }
             if let quantity = Int32(quantity) {
-                    newMedication.quantity = quantity
+                    newMedication.boxQuantity = quantity
                 }
 
             newMedication.date = date

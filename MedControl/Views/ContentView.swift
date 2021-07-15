@@ -63,11 +63,11 @@ struct ContentView: View {
                                             .font(.body)
                                             .fontWeight(.light)
                                             
-                                        if Double(medication.leftQuantity) <= Double(medication.quantity) * (userSettings.limitMedication/100.0) {
-                                            Text("\(medication.leftQuantity)").font(.body)
+                                        if Double(medication.remainingQuantity) <= Double(medication.boxQuantity) * (userSettings.limitMedication/100.0) {
+                                            Text("\(medication.remainingQuantity)").font(.body)
                                                 .fontWeight(.light).foregroundColor(.red)
                                         } else {
-                                            Text("\(medication.leftQuantity)").font(.body)
+                                            Text("\(medication.remainingQuantity)").font(.body)
                                                 .fontWeight(.light)
                                                 
                                         }
@@ -149,8 +149,8 @@ struct ContentView: View {
     
     private func updateQuantity(medication: FetchedResults<Medication>.Element) {
         withAnimation {
-            if medication.leftQuantity > 1 {
-                medication.leftQuantity -= 1
+            if medication.remainingQuantity > 1 {
+                medication.remainingQuantity -= 1
                 
                 let hist = Historic(context: viewContext)
                 hist.dates = medication.date
