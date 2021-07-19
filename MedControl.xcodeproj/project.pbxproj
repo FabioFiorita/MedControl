@@ -26,6 +26,7 @@
 		C172FD002697AAE400F43629 /* TutorialSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C172FCFF2697AAE400F43629 /* TutorialSwiftUIView.swift */; };
 		C172FD022697B40E00F43629 /* EmailHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C172FD012697B40E00F43629 /* EmailHelper.swift */; };
 		C1B462CF25BA2D61008B6714 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B462CE25BA2D61008B6714 /* WebView.swift */; };
+		C1C4ED2426A5FDC8009AAE79 /* MedicationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C4ED2326A5FDC8009AAE79 /* MedicationModels.swift */; };
 		C1DEF4A025B4C3580052B593 /* MedicationDetailSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DEF49F25B4C3570052B593 /* MedicationDetailSwiftUIView.swift */; };
 		C1DEF4A425B4C5E40052B593 /* EditMedicationSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DEF4A325B4C5E40052B593 /* EditMedicationSwiftUIView.swift */; };
 /* End PBXBuildFile section */
@@ -52,6 +53,7 @@
 		C172FCFF2697AAE400F43629 /* TutorialSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialSwiftUIView.swift; sourceTree = "<group>"; };
 		C172FD012697B40E00F43629 /* EmailHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailHelper.swift; sourceTree = "<group>"; };
 		C1B462CE25BA2D61008B6714 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		C1C4ED2326A5FDC8009AAE79 /* MedicationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationModels.swift; sourceTree = "<group>"; };
 		C1DEF49F25B4C3570052B593 /* MedicationDetailSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationDetailSwiftUIView.swift; sourceTree = "<group>"; };
 		C1DEF4A325B4C5E40052B593 /* EditMedicationSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMedicationSwiftUIView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -129,6 +131,7 @@
 				C1356EB025B8ADBD00C7368D /* LandmarkAnnotation.swift */,
 				C1531F7525C8CBF7008DADE2 /* UserSettings.swift */,
 				C172FD012697B40E00F43629 /* EmailHelper.swift */,
+				C1C4ED2326A5FDC8009AAE79 /* MedicationModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 				C1356EB125B8ADBD00C7368D /* LandmarkAnnotation.swift in Sources */,
 				C10B905F25B4A8FE00936503 /* ContentView.swift in Sources */,
 				C172FD022697B40E00F43629 /* EmailHelper.swift in Sources */,
+				C1C4ED2426A5FDC8009AAE79 /* MedicationModels.swift in Sources */,
 				C1531F7625C8CBF7008DADE2 /* UserSettings.swift in Sources */,
 				C1356EA025B8A89F00C7368D /* SettingsSwiftUIView.swift in Sources */,
 				C10B905D25B4A8FE00936503 /* MedControlApp.swift in Sources */,

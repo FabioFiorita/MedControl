@@ -21,18 +21,13 @@ struct ContentView: View {
     @ObservedObject var userSettings = UserSettings()
     
     init(){
-        //UITableView.appearance().backgroundColor = UIColor(Color("main"))
-        UITableView.appearance().backgroundColor = UIColor(Color(.systemGray5))
-        
-                    coloredNavAppearance.configureWithOpaqueBackground()
-                    coloredNavAppearance.backgroundColor = UIColor(Color("main"))
-                    coloredNavAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.white)]
-                    coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.white)]
-                    UINavigationBar.appearance().standardAppearance = coloredNavAppearance
-                    UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
-
-        //UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        
+        UITableView.appearance().backgroundColor = UIColor(Color.clear)
+        coloredNavAppearance.configureWithOpaqueBackground()
+        coloredNavAppearance.backgroundColor = UIColor(Color("main"))
+        coloredNavAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.white)]
+        coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.white)]
+        UINavigationBar.appearance().standardAppearance = coloredNavAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
     }
     
     var body: some View {
@@ -40,59 +35,10 @@ struct ContentView: View {
             NavigationView {
                 List {
                     ForEach(medications, id: \.self) { (medication: Medication) in
-                        HStack {
-                            HStack {
-                                Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular))
-                                    .foregroundColor(medication.isSelected ? Color.green : Color.primary)
-                                    .onTapGesture {
-                                        updateQuantity(medication: medication)
-                                        withAnimation(.easeInOut(duration: 2.0)) {
-                                            medication.isSelected = true
-                                        }
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                            withAnimation(.easeInOut(duration: 2)) {
-                                                medication.isSelected = false
-                                            }
-                                        }
-                                        
-                                    }
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text(medication.name ?? "Untitled").font(.title)
-                                    HStack {
-                                        Text("Medicamentos restantes:")
-                                            .font(.body)
-                                            .fontWeight(.light)
-                                            
-                                        if Double(medication.remainingQuantity) <= Double(medication.boxQuantity) * (userSettings.limitMedication/100.0) {
-                                            Text("\(medication.remainingQuantity)").font(.body)
-                                                .fontWeight(.light).foregroundColor(.red)
-                                        } else {
-                                            Text("\(medication.remainingQuantity)").font(.body)
-                                                .fontWeight(.light)
-                                                
-                                        }
-                                        
-                                    } //MARK: HStack
-                                    Text("Proximo: \(medication.date ?? Date() ,formatter: itemFormatter)")
-                                        .font(.body)
-                                        .fontWeight(.light)
-                                        
-                                }// MARK: VStack
-                                
-                            }// MARK: HStack
-                            Spacer()
-                            NavigationLink(destination: MedicationDetailSwiftUIView(medication: medication)) {
-                                EmptyView()
-                            }.frame(width: 0, height: 0)
-                            
-                        }// MARK: HStack
-                        
-                    } //MARK: ForEach
+                        row(forMedication: medication)
+                    }
                     .onDelete(perform: deleteMedication)
-                    
-                    
-                    
-                } // MARK: List
+                }
                 .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
                 .navigationBarItems(trailing:
                                         Button(action: {
@@ -104,10 +50,7 @@ struct ContentView: View {
                                         }
                 )
                 .listStyle(InsetGroupedListStyle())
-                
-                
-                
-            }//MARK: Navigation View
+            }
             .accentColor(.white)
             .tabItem {
                 Image(systemName: "pills")
@@ -123,11 +66,8 @@ struct ContentView: View {
                     Image(systemName: "gear")
                     Text("Ajustes")
                 }
-        }//MARK: TabView
-        
-    }//MARK: Body
-    
-    
+        }
+    }
     private func saveContext() {
         do {
             try viewContext.save()
@@ -173,15 +113,68 @@ struct ContentView: View {
         content.title = "Lembrete"
         content.body = "Tomar \(medication.name ?? "Medicamento")"
         content.sound = UNNotificationSound.default
-        //medication.idNotification = String(Date().timeIntervalSince1970)
-        
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: medication.repeatSeconds, repeats: false)
         
         let request = UNNotificationRequest(identifier: medication.id!, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request)
-        
-        
+    }
+    private func checkmark(forMedication medication: Medication) -> some View {
+        Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular))
+            .foregroundColor(medication.isSelected ? Color.green : Color.primary)
+            .onTapGesture {
+                updateQuantity(medication: medication)
+                withAnimation(.easeInOut(duration: 2.0)) {
+                    medication.isSelected = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    withAnimation(.easeInOut(duration: 2)) {
+                        medication.isSelected = false
+                    }
+                }
+            }
+    }
+    private func medicationName(forMedication medication: Medication) -> some View {
+        Text(medication.name ?? "Untitled").font(.title)
+    }
+    private func medicationRemainingQuantity(forMedication medication: Medication) -> some View {
+        Group {
+            Text("Medicamentos restantes:")
+                .font(.body)
+                .fontWeight(.light)
+            if Double(medication.remainingQuantity) <= Double(medication.boxQuantity) * (userSettings.limitMedication/100.0) {
+                Text("\(medication.remainingQuantity)")
+                    .font(.body)
+                    .fontWeight(.light).foregroundColor(.red)
+            } else {
+                Text("\(medication.remainingQuantity)").font(.body)
+                    .fontWeight(.light)
+            }
+        }
+    }
+    private func medicationDate(forMedication medication: Medication) -> some View {
+        Text("Proximo: \(medication.date ?? Date() ,formatter: itemFormatter)")
+            .font(.body)
+            .fontWeight(.light)
+    }
+    
+    private func row(forMedication medication: Medication) -> some View {
+        HStack {
+            HStack {
+                checkmark(forMedication: medication)
+                VStack(alignment: .leading, spacing: 5) {
+                    medicationName(forMedication: medication)
+                    HStack {
+                        medicationRemainingQuantity(forMedication: medication)
+                    }
+                    medicationDate(forMedication: medication)
+                }
+            }
+            Spacer()
+            NavigationLink(destination: MedicationDetailSwiftUIView(medication: medication)) {
+                EmptyView()
+            }.frame(width: 0, height: 0)
+        }
     }
     
     private let itemFormatter: DateFormatter = {
@@ -191,8 +184,6 @@ struct ContentView: View {
         formatter.locale = Locale(identifier: "pt-BR")
         return formatter
     }()
-    
-    
 }
 
 

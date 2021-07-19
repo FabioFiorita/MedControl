@@ -11,6 +11,7 @@
         <attribute name="isSelected" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="notificationType" optional="YES" attributeType="String"/>
         <attribute name="remainingQuantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="repeatPeriod" optional="YES" attributeType="String"/>
         <attribute name="repeatSeconds" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
@@ -18,6 +19,6 @@
     </entity>
     <elements>
         <element name="Historic" positionX="-54" positionY="63" width="128" height="73"/>
-        <element name="Medication" positionX="-521.43359375" positionY="-64.05859375" width="128" height="179"/>
+        <element name="Medication" positionX="-521.43359375" positionY="-64.05859375" width="128" height="194"/>
     </elements>
 </model>

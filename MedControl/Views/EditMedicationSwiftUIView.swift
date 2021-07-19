@@ -28,40 +28,28 @@ struct EditMedicationSwiftUIView: View {
     var body: some View {
         NavigationView{
             Form {
-                TextField("Nome do Medicamento", text: $name)
-                    .onAppear {
-                        if pickerView {
-                            self.name = self.medication.name != nil ? "\(self.medication.name!)" : ""
-                        }
+                Group {
+                    TextField("Nome do Medicamento", text: $name)
+                        .disableAutocorrection(true)
+                    TextField("Quantidade Restante", text: $leftQuantity).keyboardType(.numberPad)
+                    TextField("Quantidade na Caixa", text: $quantity).keyboardType(.numberPad)
+                    DatePicker("Data de Início", selection: $date, in: Date()...)
+                }
+                .onAppear {
+                    if pickerView {
+                        self.name = self.medication.name != nil ? "\(self.medication.name!)" : ""
+                        self.leftQuantity = (self.medication.remainingQuantity != 0) ? "\(self.medication.remainingQuantity)" : ""
+                        self.quantity = (self.medication.boxQuantity != 0) ? "\(self.medication.boxQuantity)" : ""
+                        self.date = self.medication.date ?? Date()
+                        self.repeatPeriod = self.medication.repeatPeriod ?? "Nunca"
                     }
-                    .disableAutocorrection(true)
-                
-                TextField("Quantidade Restante", text: $leftQuantity).keyboardType(.numberPad)
-                    .onAppear {
-                        if pickerView {
-                            self.leftQuantity = (self.medication.remainingQuantity != 0) ? "\(self.medication.remainingQuantity)" : ""
-                        }
-                    }
-                
-                TextField("Quantidade na Caixa", text: $quantity).keyboardType(.numberPad)
-                    .onAppear {
-                        if pickerView {
-                            self.quantity = (self.medication.boxQuantity != 0) ? "\(self.medication.boxQuantity)" : ""
-                        }
-                    }
-                
-                DatePicker("Data de Início", selection: $date, in: Date()...)
-                
+                }
                 Picker(selection: $repeatPeriod, label: Text("Repetir")) {
                     ForEach(RepeatPeriod.periods, id: \.self) { periods in
                         Text(periods).tag(periods)
                     }
                 }.onAppear {
-                    if pickerView {
-                        self.repeatPeriod = "Nunca"
-                    }
                     pickerView = false
-                    
                 }
                 
                 Section{
@@ -73,9 +61,6 @@ struct EditMedicationSwiftUIView: View {
                             }
                         }
                 }
-                
-                
-                
             }
             .navigationBarTitle(Text("Editar Medicamento"),displayMode: .inline)
             .navigationBarItems(leading:
@@ -102,7 +87,6 @@ struct EditMedicationSwiftUIView: View {
     
     private func editMedication(newMedication: Medication) {
         withAnimation {
-            
             newMedication.name = name
             if let leftQuantity = Int32(leftQuantity) {
                 newMedication.remainingQuantity = leftQuantity

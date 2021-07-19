@@ -15,67 +15,36 @@ struct MedicationDetailSwiftUIView: View {
     @State private var showModal = false
     
     let medication: Medication
-    private var arrayDate: [Historic] {
-        let aux = Array(medication.dates as? Set<Historic> ?? [])
-        return aux
-    }
-    private var sortedDates: [Historic] {
-        let aux = arrayDate.sorted(by: { $0.dates!.timeIntervalSinceNow > $1.dates!.timeIntervalSinceNow })
+    private var sortedHistoric: [Historic] {
+        var aux = Array(medication.dates as? Set<Historic> ?? [])
+        aux = aux.sorted(by: { $0.dates ?? .distantPast > $1.dates ?? .distantPast })
         return aux
     }
     
     var body: some View {
         NavigationView{
             ZStack {
-                //Color("main").ignoresSafeArea(.all)
                 Color(.systemGray5)
                 VStack(alignment: .leading) {
                     VStack {
                         VStack(alignment: .leading, spacing: 5.0){
-                            Text("Medicamentos restantes: \(medication.remainingQuantity)")
-                            
-                            Text("Quantidade de medicamentos na caixa: \(medication.boxQuantity)")
-                            Button(action: {
-                                refreshQuantity(medication)
-                                self.presentationMode.wrappedValue.dismiss()
-                            }) {
-                                Text("Renovar Medicamentos")
-                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                                    .padding()
-                                    .background(Color("main"))
-                                    .cornerRadius(10.0)
-                                    .foregroundColor(.white)
-                            }
+                            medicationInformation(forMedication: medication)
                         }//MARK: VStack
                         .padding()
                         .background(Color(.secondarySystemBackground))
                         .cornerRadius(10.0)
                         
-                        if medication.notes != "" {
-                            VStack(alignment: .leading, spacing: 5.0){
-                                Text("Notas").font(.title2)
-                                Text("\(medication.notes ?? "")").frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                                    .padding()
-                            }.padding()
-                            .background(Color(.secondarySystemBackground))
-                            .cornerRadius(10.0)
-                        }
+                        medicationNotes(forMedication: medication)
                         
                     }.padding()
-                    
+                    .background(Color.clear)
                     List {
-                        ForEach(sortedDates.prefix(10) , id: \.self){ hist in
-                            HStack {
-                                Text("\(hist.dates ?? Date(),formatter: itemFormatter)" )
-                                Spacer()
-                                Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-                            }
-                            
+                        ForEach(sortedHistoric.prefix(5) , id: \.self){ historic in
+                            medicationDateHistory(forHistoric: historic)
                         }
                     }
-                    
                     Spacer()
-                }// MARK: VStack
+                }
                 
             }
             
@@ -110,7 +79,45 @@ struct MedicationDetailSwiftUIView: View {
         }
     }
     
-    
+    private func medicationInformation(forMedication medication: Medication) -> some View {
+        Group {
+            Text("Medicamentos restantes: \(medication.remainingQuantity)")
+            Text("Quantidade de medicamentos na caixa: \(medication.boxQuantity)")
+            Button(action: {
+                refreshQuantity(medication)
+                self.presentationMode.wrappedValue.dismiss()
+            }) {
+                Text("Renovar Medicamentos")
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                    .padding()
+                    .background(Color("main"))
+                    .cornerRadius(10.0)
+                    .foregroundColor(.white)
+            }
+        }
+    }
+    private func medicationNotes(forMedication medication: Medication) -> some View {
+        Group {
+            if medication.notes != "" {
+                VStack(alignment: .leading, spacing: 5.0){
+                    Text("Notas").font(.title2)
+                    Text("\(medication.notes ?? "")").frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                        .padding()
+                }.padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(10.0)
+            }
+        }
+    }
+    private func medicationDateHistory(forHistoric historic: Historic) -> some View {
+        Group {
+            HStack {
+                Text("\(historic.dates ?? Date(),formatter: itemFormatter)" )
+                Spacer()
+                Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+            }
+        }
+    }
 }
 
 private let itemFormatter: DateFormatter = {
@@ -120,6 +127,7 @@ private let itemFormatter: DateFormatter = {
     formatter.locale = Locale(identifier: "pt-BR")
     return formatter
 }()
+
 
 struct MedicationDetailSwiftUIView_Previews: PreviewProvider {
     static let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
