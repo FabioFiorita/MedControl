@@ -114,7 +114,19 @@ struct MedicationDetailSwiftUIView: View {
             HStack {
                 Text("\(historic.dates ?? Date(),formatter: itemFormatter)" )
                 Spacer()
-                Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                Group {
+                    switch historic.medicationStatus {
+                    case "Sem Atraso":
+                        Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                    case "Atrasado":
+                        Image(systemName: "clock.fill").foregroundColor(.yellow)
+                    case "Não tomou":
+                        Image(systemName: "xmark.circle.fill").foregroundColor(.red)
+                    default:
+                        Image(systemName: "questionmark").foregroundColor(.red)
+                    }
+                }
+                
             }
         }
     }

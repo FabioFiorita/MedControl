@@ -13,6 +13,7 @@ import NotificationCenter
 struct AddMedicationSwiftUIView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
+    @StateObject private var notificationManager = NotificationManager()
     @State private var name = ""
     @State private var quantity = ""
     @State private var date = Date()
@@ -21,7 +22,7 @@ struct AddMedicationSwiftUIView: View {
     @State private var leftQuantity = ""
     @State private var notificationType = ""
     @State var showAlert = false
-    
+    @State private var pickerView = true
     
     @ObservedObject var userSettings = UserSettings()
     
@@ -38,6 +39,9 @@ struct AddMedicationSwiftUIView: View {
                         ForEach(RepeatPeriod.periods, id: \.self) { periods in
                             Text(periods).tag(periods)
                         }
+                    }
+                    .onAppear {
+                        pickerView = false
                     }
                 }
                 Section{
@@ -77,7 +81,9 @@ struct AddMedicationSwiftUIView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .onAppear {
-                notificationType = "Após Conclusão"
+                if pickerView {
+                    notificationType = "Após Conclusão"
+                }
             }
             if notificationType == "Regularmente" {
                 Text("O próximo medicamento será agendando seguindo a data definida")
@@ -118,16 +124,16 @@ struct AddMedicationSwiftUIView: View {
             newMedication.repeatSeconds = convertToSeconds(newMedication.repeatPeriod ?? "")
             newMedication.notificationType = notificationType
             
-            let notificationStatus = scheduleNotification(medication: newMedication)
-            
-            if(notificationStatus) {
+            guard let timeInterval = newMedication.date?.timeIntervalSinceNow else {return false}
+            if timeInterval > 0 {
+                notificationManager.createLocalNotificationByTimeInterval(identifier: newMedication.id ?? UUID().uuidString, title: "Tomar \(newMedication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
+                    if error == nil {
+                        print("Notificação criada")
+                    }
+                }
+            }
                 saveContext()
                 return true
-            } else {
-                print("Erro na criação da notificação")
-                return false
-            }
-            
         }
     }
     
@@ -135,7 +141,7 @@ struct AddMedicationSwiftUIView: View {
         var seconds = 3.0
         switch time {
         case "Nunca":
-            seconds = 10.0
+            seconds = 60.0
         case "15 minutos":
             seconds = 900.0
         case "30 minutos":
@@ -162,42 +168,6 @@ struct AddMedicationSwiftUIView: View {
         return seconds
     }
     
-    private func scheduleNotification(medication: Medication) -> Bool {
-        
-        notificationPermission()
-        
-        let content = UNMutableNotificationContent()
-        content.title = "Lembrete"
-        content.body = "Tomar \(medication.name ?? "Medicamento")"
-        content.sound = UNNotificationSound.default
-        
-        guard let timeInterval = medication.date?.timeIntervalSinceNow else {return false}
-        
-        guard timeInterval > 0 else {
-            return false
-        }
-        
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        
-        let request = UNNotificationRequest(identifier: medication.id!, content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request)
-        
-        return true
-        
-    } //Func: scheduleNotification
-    
-    private func notificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound])  {
-            success, error in
-            if success {
-                print("authorization granted")
-            } else if let error = error {
-                print(error.localizedDescription)
-            }
-        }
-    }
     
 } //AddMedicationSwiftUIView: View
 

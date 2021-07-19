@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20F71" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Historic" representedClassName="Historic" syncable="YES" codeGenerationType="class">
         <attribute name="dates" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="medicationStatus" optional="YES" attributeType="String"/>
         <relationship name="medication" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Medication" inverseName="dates" inverseEntity="Medication"/>
     </entity>
     <entity name="Medication" representedClassName="Medication" syncable="YES" codeGenerationType="class">
@@ -18,7 +19,7 @@
         <relationship name="dates" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Historic" inverseName="medication" inverseEntity="Historic"/>
     </entity>
     <elements>
-        <element name="Historic" positionX="-54" positionY="63" width="128" height="73"/>
+        <element name="Historic" positionX="-54" positionY="63" width="128" height="74"/>
         <element name="Medication" positionX="-521.43359375" positionY="-64.05859375" width="128" height="194"/>
     </elements>
 </model>

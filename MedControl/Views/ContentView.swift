@@ -13,12 +13,14 @@ struct ContentView: View {
     let coloredNavAppearance = UINavigationBarAppearance()
     @Environment(\.managedObjectContext) private var viewContext
     @State private var showModalAdd = false
+    @State private var showModalEdit = false
     @Environment(\.presentationMode) var presentationMode
     @FetchRequest(entity: Medication.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Medication.date, ascending: true)])
     private var medications: FetchedResults<Medication>
-    
+    @StateObject private var notificationManager = NotificationManager()
     
     @ObservedObject var userSettings = UserSettings()
+    
     
     init(){
         UITableView.appearance().backgroundColor = UIColor(Color.clear)
@@ -50,6 +52,22 @@ struct ContentView: View {
                                         }
                 )
                 .listStyle(InsetGroupedListStyle())
+                .onAppear(perform: notificationManager.reloadAuthorizationStatus)
+                .onChange(of: notificationManager.authorizationStatus) { authorizationStatus in
+                    switch authorizationStatus {
+                    case .notDetermined:
+                        notificationManager.requestAuthorization()
+                    case .authorized:
+                        notificationManager.reloadLocalNotifications()
+                    case .denied:
+                        print("Notificações não permitidas")
+                    default:
+                        break
+                    }
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                    notificationManager.reloadAuthorizationStatus()
+                }
             }
             .accentColor(.white)
             .tabItem {
@@ -68,6 +86,7 @@ struct ContentView: View {
                 }
         }
     }
+    
     private func saveContext() {
         do {
             try viewContext.save()
@@ -76,8 +95,6 @@ struct ContentView: View {
             fatalError("Unresolved Error: \(error)")
         }
     }
-    
-    
     
     private func deleteMedication(offsets: IndexSet) {
         withAnimation {
@@ -92,13 +109,11 @@ struct ContentView: View {
             if medication.remainingQuantity > 1 {
                 medication.remainingQuantity -= 1
                 
-                let hist = Historic(context: viewContext)
-                hist.dates = medication.date
-                hist.medication = medication
+                let historic = Historic(context: viewContext)
+                historic.dates = medication.date
+                historic.medication = medication
                 
-                //medication.date = Date(timeInterval: medication.repeatSeconds, since: medication.date ?? Date())
-                medication.date = Date(timeIntervalSinceNow: medication.repeatSeconds)
-                scheduleNotification(medication: medication)
+                rescheduleNotification(forMedication: medication, forHistoric: historic)
                 
             } else {
                 viewContext.delete(medication)
@@ -107,18 +122,30 @@ struct ContentView: View {
         }
     }
     
-    private func scheduleNotification(medication: Medication) {
-        
-        let content = UNMutableNotificationContent()
-        content.title = "Lembrete"
-        content.body = "Tomar \(medication.name ?? "Medicamento")"
-        content.sound = UNNotificationSound.default
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: medication.repeatSeconds, repeats: false)
-        
-        let request = UNNotificationRequest(identifier: medication.id!, content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request)
+    private func rescheduleNotification(forMedication medication: Medication, forHistoric historic: Historic) {
+        if medication.date?.timeIntervalSinceNow ?? 0.0 > 900.0 {
+            historic.medicationStatus = "Atrasado"
+        } else {
+            historic.medicationStatus = "Sem Atraso"
+        }
+        if medication.notificationType == "Regularmente" {
+            medication.date = Date(timeInterval: medication.repeatSeconds, since: medication.date ?? Date())
+        } else {
+            medication.date = Date(timeIntervalSinceNow: medication.repeatSeconds)
+        }
+        guard let timeInterval = medication.date?.timeIntervalSinceNow else {return}
+        if timeInterval > 0 {
+            notificationManager.createLocalNotificationByTimeInterval(identifier: medication.id ?? UUID().uuidString, title: "Tomar \(medication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
+                if error == nil {
+                    print("Notificação criada")
+                }
+            }
+        } else {
+            historic.medicationStatus = "Não tomou"
+            self.showModalEdit = true
+        }
     }
+    
     private func checkmark(forMedication medication: Medication) -> some View {
         Image(systemName: "checkmark.circle").font(.system(size: 35, weight: .regular))
             .foregroundColor(medication.isSelected ? Color.green : Color.primary)
@@ -133,6 +160,15 @@ struct ContentView: View {
                     }
                 }
             }
+            .sheet(isPresented: self.$showModalEdit) {
+                AddMedicationSwiftUIView()
+            }
+            .alert(isPresented: $showModalEdit, content: {
+                let alert = Alert(title: Text("Erro na hora de agendar a notificação"), message: Text("Coloque a data novamente"), dismissButton: Alert.Button.default(Text("OK")))
+                return alert
+            })
+            
+            
     }
     private func medicationName(forMedication medication: Medication) -> some View {
         Text(medication.name ?? "Untitled").font(.title)
