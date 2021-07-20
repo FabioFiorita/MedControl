@@ -63,7 +63,6 @@ final class NotificationManager: ObservableObject {
         notificationContent.body = "Abra o App para tomar o Medicamento!"
         
         let request = UNNotificationRequest(identifier: identifier, content: notificationContent, trigger: trigger)
-        
         UNUserNotificationCenter.current().add(request, withCompletionHandler: completion)
     }
     

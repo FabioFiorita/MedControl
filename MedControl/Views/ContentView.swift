@@ -110,7 +110,7 @@ struct ContentView: View {
                 medication.remainingQuantity -= 1
                 
                 let historic = Historic(context: viewContext)
-                historic.dates = medication.date
+                historic.dates = Date()
                 historic.medication = medication
                 
                 rescheduleNotification(forMedication: medication, forHistoric: historic)
@@ -123,7 +123,7 @@ struct ContentView: View {
     }
     
     private func rescheduleNotification(forMedication medication: Medication, forHistoric historic: Historic) {
-        if medication.date?.timeIntervalSinceNow ?? 0.0 > 900.0 {
+        if medication.date?.timeIntervalSince(historic.dates ?? Date()) ?? 0.0 > 60.0 {
             historic.medicationStatus = "Atrasado"
         } else {
             historic.medicationStatus = "Sem Atraso"
@@ -143,6 +143,13 @@ struct ContentView: View {
         } else {
             historic.medicationStatus = "Não tomou"
             self.showModalEdit = true
+//            medication.date = Date(timeIntervalSinceNow: medication.repeatSeconds)
+//            guard let timeInterval = medication.date?.timeIntervalSinceNow else {return}
+//            notificationManager.createLocalNotificationByTimeInterval(identifier: medication.id ?? UUID().uuidString, title: "Tomar \(medication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
+//                if error == nil {
+//                    print("Notificação criada")
+//                }
+//            }
         }
     }
     
@@ -160,11 +167,8 @@ struct ContentView: View {
                     }
                 }
             }
-            .sheet(isPresented: self.$showModalEdit) {
-                AddMedicationSwiftUIView()
-            }
             .alert(isPresented: $showModalEdit, content: {
-                let alert = Alert(title: Text("Erro na hora de agendar a notificação"), message: Text("Coloque a data novamente"), dismissButton: Alert.Button.default(Text("OK")))
+                let alert = Alert(title: Text("Erro na hora de agendar a notificação"), message: Text("A próxima notificação foi agendada para o próximo horário da repetição a partir da hora atual"), dismissButton: Alert.Button.default(Text("OK")))
                 return alert
             })
             
