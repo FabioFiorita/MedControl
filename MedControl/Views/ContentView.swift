@@ -13,6 +13,8 @@ struct ContentView: View {
     let coloredNavAppearance = UINavigationBarAppearance()
     @Environment(\.managedObjectContext) private var viewContext
     @State private var showModalAdd = false
+    @State private var showTimeIntervalAlert = false
+    @State private var authorizationDenied = false
     @State private var showModalEdit = false
     @Environment(\.presentationMode) var presentationMode
     @FetchRequest(entity: Medication.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Medication.date, ascending: true)])
@@ -60,13 +62,24 @@ struct ContentView: View {
                     case .authorized:
                         notificationManager.reloadLocalNotifications()
                     case .denied:
-                        print("Notificações não permitidas")
+                        self.authorizationDenied = true
                     default:
                         break
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
                     notificationManager.reloadAuthorizationStatus()
+                }
+                .alert(isPresented: $authorizationDenied) {
+                    Alert(
+                            title: Text("Notificações desativadas"),
+                            message: Text("Abra o App Ajustes e habilite as notificações para monitorar seus medicamentos"),
+                            primaryButton: .cancel(Text("Cancelar")),
+                            secondaryButton: .default(Text("Abrir Ajustes"), action: {
+                              if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
+                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                              }
+                            }))
                 }
             }
             .accentColor(.white)
@@ -100,9 +113,9 @@ struct ContentView: View {
         withAnimation {
             offsets.map{ medications[$0] }.forEach(viewContext.delete)
             saveContext()
-            
         }
     }
+    
     
     private func updateQuantity(medication: FetchedResults<Medication>.Element) {
         withAnimation {
@@ -114,7 +127,6 @@ struct ContentView: View {
                 historic.medication = medication
                 
                 rescheduleNotification(forMedication: medication, forHistoric: historic)
-                
             } else {
                 viewContext.delete(medication)
             }
@@ -123,33 +135,34 @@ struct ContentView: View {
     }
     
     private func rescheduleNotification(forMedication medication: Medication, forHistoric historic: Historic) {
-        if medication.date?.timeIntervalSince(historic.dates ?? Date()) ?? 0.0 > 60.0 {
-            historic.medicationStatus = "Atrasado"
-        } else {
-            historic.medicationStatus = "Sem Atraso"
-        }
+        medicationStatus(forMedication: medication, forHistoric: historic)
         if medication.notificationType == "Regularmente" {
             medication.date = Date(timeInterval: medication.repeatSeconds, since: medication.date ?? Date())
         } else {
             medication.date = Date(timeIntervalSinceNow: medication.repeatSeconds)
         }
         guard let timeInterval = medication.date?.timeIntervalSinceNow else {return}
+        guard let identifier = medication.id else {return}
         if timeInterval > 0 {
-            notificationManager.createLocalNotificationByTimeInterval(identifier: medication.id ?? UUID().uuidString, title: "Tomar \(medication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
-                if error == nil {
-                    print("Notificação criada")
-                }
+            notificationManager.deleteLocalNotifications(identifiers: [identifier])
+            notificationManager.createLocalNotificationByTimeInterval(identifier: identifier, title: "Tomar \(medication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
+                if error == nil {}
             }
         } else {
             historic.medicationStatus = "Não tomou"
-            self.showModalEdit = true
-//            medication.date = Date(timeIntervalSinceNow: medication.repeatSeconds)
-//            guard let timeInterval = medication.date?.timeIntervalSinceNow else {return}
-//            notificationManager.createLocalNotificationByTimeInterval(identifier: medication.id ?? UUID().uuidString, title: "Tomar \(medication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
-//                if error == nil {
-//                    print("Notificação criada")
-//                }
-//            }
+            self.showTimeIntervalAlert = true
+        }
+    }
+    
+    private func medicationStatus(forMedication medication: Medication, forHistoric historic: Historic) {
+        var timeIntervalComparation = 0.0
+        if let timeIntervalDate = medication.date?.timeIntervalSince(historic.dates ?? Date()) {
+            timeIntervalComparation = timeIntervalDate
+        }
+        if timeIntervalComparation < -10.0 {
+            historic.medicationStatus = "Atrasado"
+        } else {
+            historic.medicationStatus = "Sem Atraso"
         }
     }
     
@@ -167,11 +180,19 @@ struct ContentView: View {
                     }
                 }
             }
-            .alert(isPresented: $showModalEdit, content: {
-                let alert = Alert(title: Text("Erro na hora de agendar a notificação"), message: Text("A próxima notificação foi agendada para o próximo horário da repetição a partir da hora atual"), dismissButton: Alert.Button.default(Text("OK")))
-                return alert
+            .alert(isPresented: $showTimeIntervalAlert, content: {
+                Alert(
+                        title: Text("Erro na hora de agendar a notificação"),
+                        message: Text("A próxima notificação foi agendada para o próximo horário da repetição a partir da hora atual"),
+                        primaryButton: .cancel(Text("Cancelar")),
+                        secondaryButton: .default(Text("Editar Medicamento")) {
+                            self.showModalEdit = true
+                        }
+                )
             })
-            
+            .sheet(isPresented: $showModalEdit) {
+                EditMedicationSwiftUIView(medication: medication)
+            }
             
     }
     private func medicationName(forMedication medication: Medication) -> some View {
