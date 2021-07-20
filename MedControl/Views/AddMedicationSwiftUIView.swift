@@ -8,61 +8,46 @@
 import SwiftUI
 import NotificationCenter
 
-struct RepeatPeriod{
-    static let periods = [
-        "Nunca",
-        "15 minutos",
-        "30 minutos",
-        "1 hora",
-        "2 horas",
-        "4 horas",
-        "8 horas",
-        "12 horas",
-        "1 dia",
-        "1 semana",
-        "1 mês"
-    ]
-}
+
 
 struct AddMedicationSwiftUIView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
+    @StateObject private var notificationManager = NotificationManager()
     @State private var name = ""
     @State private var quantity = ""
     @State private var date = Date()
     @State private var repeatPeriod = ""
     @State private var notes = ""
     @State private var leftQuantity = ""
+    @State private var notificationType = ""
     @State var showAlert = false
-    
+    @State private var pickerView = true
     
     @ObservedObject var userSettings = UserSettings()
     
     var body: some View {
         NavigationView{
             Form {
-                
                 TextField("Nome do Medicamento", text: $name).disableAutocorrection(true)
                 TextField("Quantidade Restante", text: $leftQuantity).keyboardType(.numberPad)
                 TextField("Quantidade na Caixa", text: $quantity).keyboardType(.numberPad)
-                
-                DatePicker("Data de Início", selection: $date, in: Date()...)
-                
-                
-                Picker(selection: $repeatPeriod, label: Text("Repetir")) {
-                    ForEach(RepeatPeriod.periods, id: \.self) { periods in
-                        Text(periods).tag(periods)
+                Section {
+                    notificationTypePicker
+                    DatePicker("Data de Início", selection: $date, in: Date()...)
+                    Picker(selection: $repeatPeriod, label: Text("Repetir")) {
+                        ForEach(RepeatPeriod.periods, id: \.self) { periods in
+                            Text(periods).tag(periods)
+                        }
+                    }
+                    .onAppear {
+                        pickerView = false
                     }
                 }
-                
-                
                 Section{
                     Text("Notas")
                     TextEditor(text: $notes).padding()
                 }
-                
-                
-                
             }
             .navigationBarTitle(Text("Novo Medicamento"),displayMode: .inline)
             .navigationBarItems(leading:
@@ -71,14 +56,43 @@ struct AddMedicationSwiftUIView: View {
                                     }).foregroundColor(.white)
                                 , trailing:
                                     Button("Salvar", action: {
-                                        addMedication()
-                                        self.presentationMode.wrappedValue.dismiss()
+                                        if addMedication() {
+                                            self.presentationMode.wrappedValue.dismiss()
+                                            showAlert = false
+                                        } else {
+                                            showAlert = true
+                                        }
+                                        
                                     }).foregroundColor(.white)
+                                    .alert(isPresented: $showAlert, content: {
+                                        let alert = Alert(title: Text("Erro na criação do medicamento"), message: Text("Confira os dados inseridos"), dismissButton: Alert.Button.default(Text("OK")))
+                                        return alert
+                                    })
             )
         }
     }
     
-    
+    private var notificationTypePicker: some View {
+        Group {
+            Picker(selection: $notificationType, label: Text("Tipo de Notificação")) {
+                ForEach(NotificationType.type, id: \.self) { type in
+                    Text(type).tag(type)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .onAppear {
+                if pickerView {
+                    notificationType = "Após Conclusão"
+                }
+            }
+            if notificationType == "Regularmente" {
+                Text("O próximo medicamento será agendando seguindo a data definida")
+            } else {
+                Text("O próximo medicamento será agendando seguindo a data da última conclusão")
+            }
+        }
+        
+    }
     
     
     
@@ -92,98 +106,68 @@ struct AddMedicationSwiftUIView: View {
         }
     }
     
-    private func addMedication() {
+    private func addMedication() -> Bool {
         withAnimation {
             let newMedication = Medication(context: viewContext)
             newMedication.name = name
             if let leftQuantity = Int32(leftQuantity) {
-                newMedication.leftQuantity = leftQuantity
+                newMedication.remainingQuantity = leftQuantity
             }
             if let quantity = Int32(quantity) {
-                newMedication.quantity = quantity
+                newMedication.boxQuantity = quantity
             }
-            
-            
             newMedication.id = String(Date().timeIntervalSince1970)
             newMedication.date = date
             newMedication.repeatPeriod = repeatPeriod
             newMedication.notes = notes
             newMedication.isSelected = false
+            newMedication.repeatSeconds = convertToSeconds(newMedication.repeatPeriod ?? "")
+            newMedication.notificationType = notificationType
             
-            
-            switch newMedication.repeatPeriod {
-            case "Nunca":
-                newMedication.repeatSeconds = 10.0
-            case "15 minutos":
-                newMedication.repeatSeconds = 900.0
-            case "30 minutos":
-                newMedication.repeatSeconds = 1800.0
-            case "1 hora":
-                newMedication.repeatSeconds = 3600.0
-            case "2 horas":
-                newMedication.repeatSeconds = 7200.0
-            case "4 horas":
-                newMedication.repeatSeconds = 14400.0
-            case "8 horas":
-                newMedication.repeatSeconds = 28800.0
-            case "12 horas":
-                newMedication.repeatSeconds = 43200.0
-            case "1 dia":
-                newMedication.repeatSeconds = 86400.0
-            case "1 semana":
-                newMedication.repeatSeconds = 604800.0
-            case "1 mês":
-                newMedication.repeatSeconds = 2419200.0
-            default:
-                break
+            guard let timeInterval = newMedication.date?.timeIntervalSinceNow else {return false}
+            if timeInterval > 0 {
+                notificationManager.createLocalNotificationByTimeInterval(identifier: newMedication.id ?? UUID().uuidString, title: "Tomar \(newMedication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
+                    if error == nil {
+                        print("Notificação criada")
+                    }
+                }
             }
-            let notificationStatusnotificationStatus = scheduleNotification(medication: newMedication)
-            
-            if(notificationStatusnotificationStatus) {
                 saveContext()
-            } else {
-                print("Erro na criação da notificação")
-            }
-            
+                return true
         }
     }
     
-    private func scheduleNotification(medication: Medication) -> Bool {
-        
-        notificationPermission()
-        
-        let content = UNMutableNotificationContent()
-        content.title = "Lembrete"
-        content.body = "Tomar \(medication.name ?? "Medicamento")"
-        content.sound = UNNotificationSound.default
-        
-        guard let timeInterval = medication.date?.timeIntervalSinceNow else {return false}
-        
-        guard timeInterval > 0 else {
-            return false
+    private func convertToSeconds(_ time: String) -> Double {
+        var seconds = 3.0
+        switch time {
+        case "Nunca":
+            seconds = 60.0
+        case "15 minutos":
+            seconds = 900.0
+        case "30 minutos":
+            seconds = 1800.0
+        case "1 hora":
+            seconds = 3600.0
+        case "2 horas":
+            seconds = 7200.0
+        case "4 horas":
+            seconds = 14400.0
+        case "8 horas":
+            seconds = 28800.0
+        case "12 horas":
+            seconds = 43200.0
+        case "1 dia":
+            seconds = 86400.0
+        case "1 semana":
+            seconds = 604800.0
+        case "1 mês":
+            seconds = 2419200.0
+        default:
+            break
         }
-        
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        
-        let request = UNNotificationRequest(identifier: medication.id!, content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request)
-        
-        return true
-        
-    } //Func: scheduleNotification
-    
-    private func notificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound])  {
-            success, error in
-            if success {
-                print("authorization granted")
-            } else if let error = error {
-                print(error.localizedDescription)
-            }
-        }
+        return seconds
     }
+    
     
 } //AddMedicationSwiftUIView: View
 

@@ -16,88 +16,90 @@ struct SettingsSwiftUIView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                //Color("main").ignoresSafeArea(.all)
                 Color(.systemGray5).ignoresSafeArea(.all)
                 VStack(alignment: .leading, spacing: 50.0) {
                     VStack(alignment: .leading, spacing: 5.0) {
-                        Toggle(isOn: $userSettings.limitNotification) {
-                            Text("Deseja ser notificado quando estiver acabando seus remédios?")
-                        }
-                        Stepper(value: $userSettings.limitMedication, in: 0.0...100.0) {
-                            Text("Começar a notificar quando a quantidade chegar em: ") + Text("\(Int(userSettings.limitMedication))%").foregroundColor(.red).bold() + Text(" do total")
-                        }
-                        DatePicker("Horario para as notificações:", selection: $userSettings.limitDate, displayedComponents: .hourAndMinute)
+                        medicationAlertSettings
                     }
                     .padding()
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(10.0)
-                    VStack(alignment: .leading, spacing: 20.0) {
-                        HStack {
-                            Button(action: {
-                                openURL(URL(string: "https://github.com/FabioFiorita/MedControl")!)
-                            }) {
-                                Text("Avalie!")
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(Color.gray)
-                            }
-                        }
-                        Divider()
-                        HStack {
-                            Button(action: {
-                                self.showModalTutorial = true
-                            }) {
-                                Text("Tutorial")
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(Color.gray)
-                            }.sheet(isPresented: self.$showModalTutorial) {
-                                TutorialSwiftUIView()
-                            }
-                            
-                        }
-                        Divider()
-                        HStack {
-                            Button(action: {
-                                openURL(URL(string: "https://github.com/FabioFiorita/MedControl")!)
-                            }) {
-                                Text("Código-Fonte")
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(Color.gray)
-                            }
-                        }
-                        Divider()
-                        HStack {
-                            Button(action: {
-                                EmailHelper.shared.sendEmail(subject: "", body: "", to: "fabiolfp@gmail.com")
-                            }) {
-                                Text("Fale Conosco")
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(Color.gray)
-                            }
-                            
-                        }
-                    }
-                    .padding()
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(10.0)
-                    
-                    
-                    
+                    links
                     Spacer()
-                }//MARK: VStack
+                }
                 .navigationBarTitle("Ajustes")
                 .padding()
-                //.background(Color(.secondarySystemBackground))
                 .cornerRadius(10.0)
-            }//MARK: ZStack
-        }// MARK: NavigationView
-        
-    }// MARK: Body
+            }
+        }
+    }
+    private var medicationAlertSettings: some View {
+        Group {
+            Toggle(isOn: $userSettings.limitNotification) {
+                Text("Deseja ser notificado quando estiver acabando seus remédios?")
+            }
+            Stepper(value: $userSettings.limitMedication, in: 0.0...100.0) {
+                Text("Começar a notificar quando a quantidade chegar em: ") + Text("\(Int(userSettings.limitMedication))%").foregroundColor(.red).bold() + Text(" do total")
+            }
+            DatePicker("Horario para as notificações:", selection: $userSettings.limitDate, displayedComponents: .hourAndMinute)
+        }
+    }
     
-}// MARK: View
+    private var links: some View {
+        VStack(alignment: .leading, spacing: 20.0) {
+            HStack {
+                Button(action: {
+                    openURL(URL(string: "https://github.com/FabioFiorita/MedControl")!)
+                }) {
+                    Text("Avalie!")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(Color.gray)
+                }
+            }
+            Divider()
+            HStack {
+                Button(action: {
+                    self.showModalTutorial = true
+                }) {
+                    Text("Tutorial")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(Color.gray)
+                }.sheet(isPresented: self.$showModalTutorial) {
+                    TutorialSwiftUIView()
+                }
+                
+            }
+            Divider()
+            HStack {
+                Button(action: {
+                    openURL(URL(string: "https://github.com/FabioFiorita/MedControl")!)
+                }) {
+                    Text("Código-Fonte")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(Color.gray)
+                }
+            }
+            Divider()
+            HStack {
+                Button(action: {
+                    EmailHelper.shared.sendEmail(subject: "", body: "", to: "fabiolfp@gmail.com")
+                }) {
+                    Text("Fale Conosco")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(Color.gray)
+                }
+                
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(10.0)
+    }
+}
 
 
 struct SettingsSwiftUIView_Previews: PreviewProvider {
