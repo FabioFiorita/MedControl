@@ -20,9 +20,9 @@ struct ContentView: View {
     @FetchRequest(entity: Medication.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Medication.date, ascending: true)])
     private var medications: FetchedResults<Medication>
     @StateObject private var notificationManager = NotificationManager()
-    
+    @StateObject private var delegate = NotificationDelegate()
     @ObservedObject var userSettings = UserSettings()
-    
+    @StateObject private var medicationManager = MedicationManager()
     
     init(){
         //UITableView.appearance().backgroundColor = UIColor(colorScheme == .dark ? Color.black : Color(.systemGray6))
@@ -54,7 +54,10 @@ struct ContentView: View {
                                         }
                 )
                 .listStyle(InsetGroupedListStyle())
-                .onAppear(perform: notificationManager.reloadAuthorizationStatus)
+                .onAppear(perform: {
+                    notificationManager.reloadAuthorizationStatus()
+                    UNUserNotificationCenter.current().delegate = delegate
+                })
                 .onChange(of: notificationManager.authorizationStatus) { authorizationStatus in
                     switch authorizationStatus {
                     case .notDetermined:
@@ -100,69 +103,21 @@ struct ContentView: View {
         }
     }
     
-    private func saveContext() {
-        do {
-            try viewContext.save()
-        } catch {
-            let error = error as NSError
-            fatalError("Unresolved Error: \(error)")
-        }
-    }
     
     private func deleteMedication(offsets: IndexSet) {
         withAnimation {
             offsets.map{ medications[$0] }.forEach(viewContext.delete)
-            saveContext()
+            medicationManager.saveContext(viewContext: viewContext)
         }
     }
     
     
     private func updateQuantity(medication: FetchedResults<Medication>.Element) {
         withAnimation {
-            if medication.remainingQuantity > 1 {
-                medication.remainingQuantity -= 1
-                
-                let historic = Historic(context: viewContext)
-                historic.dates = Date()
-                historic.medication = medication
-                
-                rescheduleNotification(forMedication: medication, forHistoric: historic)
-            } else {
-                viewContext.delete(medication)
+            let sucess = medicationManager.updateRemainingQuantity(medication: medication, viewContext: viewContext)
+            if !sucess {
+                self.showTimeIntervalAlert = true
             }
-            saveContext()
-        }
-    }
-    
-    private func rescheduleNotification(forMedication medication: Medication, forHistoric historic: Historic) {
-        medicationStatus(forMedication: medication, forHistoric: historic)
-        if medication.notificationType == "Regularmente" {
-            medication.date = Date(timeInterval: medication.repeatSeconds, since: medication.date ?? Date())
-        } else {
-            medication.date = Date(timeIntervalSinceNow: medication.repeatSeconds)
-        }
-        guard let timeInterval = medication.date?.timeIntervalSinceNow else {return}
-        guard let identifier = medication.id else {return}
-        if timeInterval > 0 {
-            notificationManager.deleteLocalNotifications(identifiers: [identifier])
-            notificationManager.createLocalNotificationByTimeInterval(identifier: identifier, title: "Tomar \(medication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
-                if error == nil {}
-            }
-        } else {
-            historic.medicationStatus = "Não tomou"
-            self.showTimeIntervalAlert = true
-        }
-    }
-    
-    private func medicationStatus(forMedication medication: Medication, forHistoric historic: Historic) {
-        var timeIntervalComparation = 0.0
-        if let timeIntervalDate = medication.date?.timeIntervalSince(historic.dates ?? Date()) {
-            timeIntervalComparation = timeIntervalDate
-        }
-        if timeIntervalComparation < -10.0 {
-            historic.medicationStatus = "Atrasado"
-        } else {
-            historic.medicationStatus = "Sem Atraso"
         }
     }
     

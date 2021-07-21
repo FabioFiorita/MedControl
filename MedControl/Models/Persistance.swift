@@ -15,10 +15,11 @@ struct PersistenceController {
     init() {
         container = NSPersistentContainer(name: "MedControl")
         
-        container.loadPersistentStores { (storeDEscription, error) in
+        container.loadPersistentStores { (storeDescription, error) in
             if let error = error as NSError? {
-                fatalError("Unresolved error: \(error)")
+                fatalError("Core Data Store failed: \(error)")
             }
         }
     }
+    
 }

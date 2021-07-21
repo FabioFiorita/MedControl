@@ -22,6 +22,7 @@ struct MedicationDetailSwiftUIView: View {
         return aux
     }
     @State private var historicCount = 7
+    @StateObject private var medicationManager = MedicationManager()
     
     var body: some View {
         NavigationView{
@@ -52,7 +53,7 @@ struct MedicationDetailSwiftUIView: View {
             
             .navigationBarTitle("\(medication.name ?? "Medicamento")", displayMode: .inline)
             
-        }// MARK: NavigationView
+        }
         .navigationBarItems(trailing: Button(action: {
             self.showModal = true
         }) {
@@ -61,24 +62,6 @@ struct MedicationDetailSwiftUIView: View {
             EditMedicationSwiftUIView(medication: medication)
         }
         )
-    }//MARK: Body
-    
-    
-    private func saveContext() {
-        do {
-            try viewContext.save()
-        } catch {
-            let error = error as NSError
-            fatalError("Unresolved Error: \(error)")
-        }
-    }
-    private func refreshQuantity(_ medication: FetchedResults<Medication>.Element) {
-        withAnimation {
-            
-            medication.remainingQuantity += medication.boxQuantity
-            
-            saveContext()
-        }
     }
     
     private func medicationInformation(forMedication medication: Medication) -> some View {
@@ -98,6 +81,7 @@ struct MedicationDetailSwiftUIView: View {
             }
         }
     }
+    
     private func medicationNotes(forMedication medication: Medication) -> some View {
         Group {
             if medication.notes != "" {
@@ -111,6 +95,7 @@ struct MedicationDetailSwiftUIView: View {
             }
         }
     }
+    
     private func medicationDateHistory(forHistoric historic: Historic) -> some View {
         Group {
             HStack {
@@ -132,6 +117,7 @@ struct MedicationDetailSwiftUIView: View {
             }
         }
     }
+    
     private var stepperHistory : some View {
             Stepper(value: $historicCount, in: 0...31) {
                 Text("Histórico dos últimos ") + Text("\(historicCount)").bold().foregroundColor(.orange) + Text(" medicamentos")
@@ -142,6 +128,12 @@ struct MedicationDetailSwiftUIView: View {
         
     }
     
+    private func refreshQuantity(_ medication: FetchedResults<Medication>.Element) {
+        withAnimation {
+            
+            medicationManager.refreshRemainingQuantity(medication: medication, viewContext: viewContext)
+        }
+    }
     
 }
 
