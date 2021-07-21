@@ -134,7 +134,7 @@ struct MedicationDetailSwiftUIView: View {
     }
     private var stepperHistory : some View {
             Stepper(value: $historicCount, in: 0...31) {
-                Text("Mostrar últimos ") + Text("\(historicCount)").bold().foregroundColor(.orange) + Text(" medicamentos")
+                Text("Histórico dos últimos ") + Text("\(historicCount)").bold().foregroundColor(.orange) + Text(" medicamentos")
             }
             .padding()
             .background(Color(colorScheme == .dark ? .systemGray6 : .systemBackground))
