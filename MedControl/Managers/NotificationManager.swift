@@ -40,7 +40,7 @@ final class NotificationManager: ObservableObject {
         var dateComponents = DateComponents()
         dateComponents.hour = hour
         dateComponents.minute = minute
-        
+        print("HORA: \(String(describing: dateComponents.hour)) + MINUTO: \(String(describing: dateComponents.minute))")
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         
         let notificationContent = UNMutableNotificationContent()
@@ -70,7 +70,7 @@ final class NotificationManager: ObservableObject {
     
     func deleteLocalNotifications(identifiers: [String]) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
-        //print("Notificação: \(identifiers.first ?? "") deletada!")
+        print("Notificação: \(identifiers.first ?? "") deletada!")
     }
 }
 

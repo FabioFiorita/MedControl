@@ -10,7 +10,7 @@ import CoreData
 
 final class MedicationManager: ObservableObject {
     private var notificationManager = NotificationManager()
-    
+    private var userSettings = UserSettings()
     
     func saveContext(viewContext: NSManagedObjectContext) {
         do {
@@ -79,6 +79,20 @@ final class MedicationManager: ObservableObject {
     func updateRemainingQuantity(medication: Medication, viewContext: NSManagedObjectContext) -> Bool {
         var success = true
         if medication.remainingQuantity > 1 {
+            if Double(medication.remainingQuantity) <= Double(medication.boxQuantity) * (userSettings.limitMedication/100.0) {
+                if userSettings.limitNotification {
+                    print("Entrou aqui!!!!!!!!!!")
+                    let identifier = (medication.id ?? UUID().uuidString) + "-Repiting"
+                    let dateMatching = Calendar.current.dateComponents([.hour,.minute], from: userSettings.limitDate)
+                    let hour = dateMatching.hour
+                    let minute = dateMatching.minute
+                    notificationManager.createLocalNotificationByDateMatching(identifier: identifier, title: "Comprar \(medication.name ?? "Medicamento")", hour: hour ?? 12, minute: minute ?? 00) { error in
+                        if error == nil {
+                            print("Notificação criada com id: \(identifier)")
+                        }
+                    }
+                }
+            }
             medication.remainingQuantity -= 1
             
             let historic = Historic(context: viewContext)
@@ -132,6 +146,9 @@ final class MedicationManager: ObservableObject {
     func refreshRemainingQuantity(medication: Medication, viewContext: NSManagedObjectContext) {
         medication.remainingQuantity += medication.boxQuantity
         saveContext(viewContext: viewContext)
+        guard let id = medication.id else {return}
+        let identifier = id + "-Repiting"
+        notificationManager.deleteLocalNotifications(identifiers: [identifier])
     }
     
     func convertToSeconds(_ time: String) -> Double {
