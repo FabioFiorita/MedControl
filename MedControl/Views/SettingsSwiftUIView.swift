@@ -12,17 +12,18 @@ struct SettingsSwiftUIView: View {
     @ObservedObject var userSettings = UserSettings()
     @State private var showModalTutorial = false
     @Environment(\.openURL) var openURL
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         NavigationView {
             ZStack {
-                Color(.systemGray5).ignoresSafeArea(.all)
+                Color(colorScheme == .dark ? .systemBackground : .systemGray6)
                 VStack(alignment: .leading, spacing: 50.0) {
                     VStack(alignment: .leading, spacing: 5.0) {
                         medicationAlertSettings
                     }
                     .padding()
-                    .background(Color(.secondarySystemBackground))
+                    .background(Color(colorScheme == .dark ? .systemGray6 : .systemBackground))
                     .cornerRadius(10.0)
                     links
                     Spacer()
@@ -96,7 +97,7 @@ struct SettingsSwiftUIView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color(colorScheme == .dark ? .systemGray6 : .systemBackground))
         .cornerRadius(10.0)
     }
 }

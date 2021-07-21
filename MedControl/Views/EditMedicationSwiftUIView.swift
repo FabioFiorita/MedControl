@@ -126,7 +126,7 @@ struct EditMedicationSwiftUIView: View {
             if let quantity = Int32(quantity) {
                 newMedication.boxQuantity = quantity
             }
-            newMedication.id = String(Date().timeIntervalSince1970)
+            newMedication.id = UUID().uuidString
             newMedication.date = date
             newMedication.repeatPeriod = repeatPeriod
             newMedication.notes = notes
@@ -135,8 +135,10 @@ struct EditMedicationSwiftUIView: View {
             newMedication.notificationType = notificationType
             
             guard let timeInterval = newMedication.date?.timeIntervalSinceNow else {return false}
+            guard let identifier = newMedication.id else {return false}
             if timeInterval > 0 {
-                notificationManager.createLocalNotificationByTimeInterval(identifier: newMedication.id ?? UUID().uuidString, title: "Tomar \(newMedication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
+                notificationManager.deleteLocalNotifications(identifiers: [identifier])
+                notificationManager.createLocalNotificationByTimeInterval(identifier: identifier, title: "Tomar \(newMedication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
                     if error == nil {
                         print("Notificação criada")
                     }
