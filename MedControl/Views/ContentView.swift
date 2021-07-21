@@ -25,7 +25,7 @@ struct ContentView: View {
     
     
     init(){
-        UITableView.appearance().backgroundColor = UIColor(Color.clear)
+        //UITableView.appearance().backgroundColor = UIColor(colorScheme == .dark ? Color.black : Color(.systemGray6))
         coloredNavAppearance.configureWithOpaqueBackground()
         coloredNavAppearance.backgroundColor = UIColor(Color("main"))
         coloredNavAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.white)]

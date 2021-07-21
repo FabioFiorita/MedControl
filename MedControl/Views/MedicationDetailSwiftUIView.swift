@@ -12,6 +12,7 @@ import WebKit
 struct MedicationDetailSwiftUIView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
     @State private var showModal = false
     
     let medication: Medication
@@ -20,26 +21,27 @@ struct MedicationDetailSwiftUIView: View {
         aux = aux.sorted(by: { $0.dates ?? .distantPast > $1.dates ?? .distantPast })
         return aux
     }
+    @State private var historicCount = 7
     
     var body: some View {
         NavigationView{
             ZStack {
-                Color(.systemGray5)
+                Color(colorScheme == .dark ? .systemBackground : .systemGray6)
                 VStack(alignment: .leading) {
                     VStack {
                         VStack(alignment: .leading, spacing: 5.0){
                             medicationInformation(forMedication: medication)
-                        }//MARK: VStack
+                        }
                         .padding()
-                        .background(Color(.secondarySystemBackground))
+                        .background(Color(colorScheme == .dark ? .systemGray6 : .systemBackground))
                         .cornerRadius(10.0)
                         
                         medicationNotes(forMedication: medication)
-                        
+                        stepperHistory
                     }.padding()
-                    .background(Color.clear)
+                    //.background(Color(.systemBackground))
                     List {
-                        ForEach(sortedHistoric.prefix(5) , id: \.self){ historic in
+                        ForEach(sortedHistoric.prefix(historicCount) , id: \.self){ historic in
                             medicationDateHistory(forHistoric: historic)
                         }
                     }
@@ -101,7 +103,7 @@ struct MedicationDetailSwiftUIView: View {
             if medication.notes != "" {
                 VStack(alignment: .leading, spacing: 5.0){
                     Text("Notas").font(.title2)
-                    Text("\(medication.notes ?? "")").frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                    Text("\(medication.notes ?? "")").frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
                         .padding()
                 }.padding()
                 .background(Color(.secondarySystemBackground))
@@ -130,6 +132,17 @@ struct MedicationDetailSwiftUIView: View {
             }
         }
     }
+    private var stepperHistory : some View {
+            Stepper(value: $historicCount, in: 0...31) {
+                Text("Mostrar últimos ") + Text("\(historicCount)").bold().foregroundColor(.orange) + Text(" medicamentos")
+            }
+            .padding()
+            .background(Color(colorScheme == .dark ? .systemGray6 : .systemBackground))
+            .cornerRadius(10.0)
+        
+    }
+    
+    
 }
 
 private let itemFormatter: DateFormatter = {
