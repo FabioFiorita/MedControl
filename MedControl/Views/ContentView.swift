@@ -23,6 +23,7 @@ struct ContentView: View {
     @StateObject private var delegate = NotificationDelegate()
     @ObservedObject var userSettings = UserSettings()
     @StateObject private var medicationManager = MedicationManager()
+    @AppStorage("TutorialView") var isWalkthroughViewShowing = true
     
     init(){
         //UITableView.appearance().backgroundColor = UIColor(colorScheme == .dark ? Color.black : Color(.systemGray6))
@@ -35,71 +36,77 @@ struct ContentView: View {
     }
     
     var body: some View {
-        TabView {
-            NavigationView {
-                List {
-                    ForEach(medications, id: \.self) { (medication: Medication) in
-                        row(forMedication: medication)
+        Group {
+            if isWalkthroughViewShowing {
+                TutorialSwiftUIView(isWalkthroughViewShowing: $isWalkthroughViewShowing)
+            } else {
+            TabView {
+                NavigationView {
+                    List {
+                        ForEach(medications, id: \.self) { (medication: Medication) in
+                            row(forMedication: medication)
+                        }
+                        .onDelete(perform: deleteMedication)
                     }
-                    .onDelete(perform: deleteMedication)
-                }
-                .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
-                .navigationBarItems(trailing:
-                                        Button(action: {
-                                            self.showModalAdd = true
-                                        }) {
-                                            Image(systemName: "plus").imageScale(.large).foregroundColor(.white)
-                                        }.sheet(isPresented: self.$showModalAdd) {
-                                            AddMedicationSwiftUIView()
-                                        }
-                )
-                .listStyle(InsetGroupedListStyle())
-                .onAppear(perform: {
-                    notificationManager.reloadAuthorizationStatus()
-                    UNUserNotificationCenter.current().delegate = delegate
-                })
-                .onChange(of: notificationManager.authorizationStatus) { authorizationStatus in
-                    switch authorizationStatus {
-                    case .notDetermined:
-                        notificationManager.requestAuthorization()
-                    case .authorized:
-                        notificationManager.reloadLocalNotifications()
-                    case .denied:
-                        self.authorizationDenied = true
-                    default:
-                        break
+                    .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
+                    .navigationBarItems(trailing:
+                                            Button(action: {
+                                                self.showModalAdd = true
+                                            }) {
+                                                Image(systemName: "plus").imageScale(.large).foregroundColor(.white)
+                                            }.sheet(isPresented: self.$showModalAdd) {
+                                                AddMedicationSwiftUIView()
+                                            }
+                    )
+                    .listStyle(InsetGroupedListStyle())
+                    .onAppear(perform: {
+                        notificationManager.reloadAuthorizationStatus()
+                        UNUserNotificationCenter.current().delegate = delegate
+                    })
+                    .onChange(of: notificationManager.authorizationStatus) { authorizationStatus in
+                        switch authorizationStatus {
+                        case .notDetermined:
+                            notificationManager.requestAuthorization()
+                        case .authorized:
+                            notificationManager.reloadLocalNotifications()
+                        case .denied:
+                            self.authorizationDenied = true
+                        default:
+                            break
+                        }
+                    }
+                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                        notificationManager.reloadAuthorizationStatus()
+                    }
+                    .alert(isPresented: $authorizationDenied) {
+                        Alert(
+                                title: Text("Notificações desativadas"),
+                                message: Text("Abra o App Ajustes e habilite as notificações para monitorar seus medicamentos"),
+                                primaryButton: .cancel(Text("Cancelar")),
+                                secondaryButton: .default(Text("Abrir Ajustes"), action: {
+                                  if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
+                                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                  }
+                                }))
                     }
                 }
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                    notificationManager.reloadAuthorizationStatus()
-                }
-                .alert(isPresented: $authorizationDenied) {
-                    Alert(
-                            title: Text("Notificações desativadas"),
-                            message: Text("Abra o App Ajustes e habilite as notificações para monitorar seus medicamentos"),
-                            primaryButton: .cancel(Text("Cancelar")),
-                            secondaryButton: .default(Text("Abrir Ajustes"), action: {
-                              if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
-                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                              }
-                            }))
-                }
-            }
-            .accentColor(.white)
-            .tabItem {
-                Image(systemName: "pills")
-                Text("Medicamentos")
-            }
-            MapSwiftUIView()
+                .accentColor(.white)
                 .tabItem {
-                    Image(systemName: "map")
-                    Text("Mapa")
+                    Image(systemName: "pills")
+                    Text("Medicamentos")
                 }
-            SettingsSwiftUIView()
-                .tabItem {
-                    Image(systemName: "gear")
-                    Text("Ajustes")
-                }
+                MapSwiftUIView()
+                    .tabItem {
+                        Image(systemName: "map")
+                        Text("Mapa")
+                    }
+                SettingsSwiftUIView()
+                    .tabItem {
+                        Image(systemName: "gear")
+                        Text("Ajustes")
+                    }
+            }
+            }
         }
     }
     

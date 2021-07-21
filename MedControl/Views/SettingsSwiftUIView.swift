@@ -13,6 +13,7 @@ struct SettingsSwiftUIView: View {
     @State private var showModalTutorial = false
     @Environment(\.openURL) var openURL
     @Environment(\.colorScheme) var colorScheme
+    @State private var isWalkthroughViewShowing = false
     
     var body: some View {
         NavigationView {
@@ -60,16 +61,11 @@ struct SettingsSwiftUIView: View {
             }
             Divider()
             HStack {
-                Button(action: {
-                    self.showModalTutorial = true
-                }) {
-                    Text("Tutorial")
+                NavigationLink("Tutorial", destination: TutorialSwiftUIView(isWalkthroughViewShowing: $isWalkthroughViewShowing))
                     Spacer()
                     Image(systemName: "chevron.right")
                         .foregroundColor(Color.gray)
-                }.sheet(isPresented: self.$showModalTutorial) {
-                    TutorialSwiftUIView()
-                }
+                
                 
             }
             Divider()

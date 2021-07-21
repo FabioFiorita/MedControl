@@ -29,6 +29,12 @@
 		C1C4ED2426A5FDC8009AAE79 /* MedicationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C4ED2326A5FDC8009AAE79 /* MedicationModels.swift */; };
 		C1C4ED2626A607C9009AAE79 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C4ED2526A607C9009AAE79 /* NotificationManager.swift */; };
 		C1D26C8726A86637000AE7BB /* MedicationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D26C8626A86637000AE7BB /* MedicationManager.swift */; };
+		C1D26C8A26A895C1000AE7BB /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D26C8926A895C1000AE7BB /* GradientView.swift */; };
+		C1D26C8C26A898B8000AE7BB /* PageTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D26C8B26A898B8000AE7BB /* PageTabView.swift */; };
+		C1D26C8E26A89972000AE7BB /* TutorialModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D26C8D26A89972000AE7BB /* TutorialModel.swift */; };
+		C1D26C9026A89AE5000AE7BB /* TabDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D26C8F26A89AE5000AE7BB /* TabDetailsView.swift */; };
+		C1D26C9226A89D8F000AE7BB /* ButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D26C9126A89D8F000AE7BB /* ButtonsView.swift */; };
+		C1D26C9426A89FCF000AE7BB /* StartButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D26C9326A89FCF000AE7BB /* StartButtonView.swift */; };
 		C1DEF4A025B4C3580052B593 /* MedicationDetailSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DEF49F25B4C3570052B593 /* MedicationDetailSwiftUIView.swift */; };
 		C1DEF4A425B4C5E40052B593 /* EditMedicationSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DEF4A325B4C5E40052B593 /* EditMedicationSwiftUIView.swift */; };
 /* End PBXBuildFile section */
@@ -58,6 +64,12 @@
 		C1C4ED2326A5FDC8009AAE79 /* MedicationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationModels.swift; sourceTree = "<group>"; };
 		C1C4ED2526A607C9009AAE79 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		C1D26C8626A86637000AE7BB /* MedicationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationManager.swift; sourceTree = "<group>"; };
+		C1D26C8926A895C1000AE7BB /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
+		C1D26C8B26A898B8000AE7BB /* PageTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageTabView.swift; sourceTree = "<group>"; };
+		C1D26C8D26A89972000AE7BB /* TutorialModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialModel.swift; sourceTree = "<group>"; };
+		C1D26C8F26A89AE5000AE7BB /* TabDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabDetailsView.swift; sourceTree = "<group>"; };
+		C1D26C9126A89D8F000AE7BB /* ButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonsView.swift; sourceTree = "<group>"; };
+		C1D26C9326A89FCF000AE7BB /* StartButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartButtonView.swift; sourceTree = "<group>"; };
 		C1DEF49F25B4C3570052B593 /* MedicationDetailSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationDetailSwiftUIView.swift; sourceTree = "<group>"; };
 		C1DEF4A325B4C5E40052B593 /* EditMedicationSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMedicationSwiftUIView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -118,7 +130,7 @@
 				C10B905E25B4A8FE00936503 /* ContentView.swift */,
 				C1356E9C25B8A89400C7368D /* MapSwiftUIView.swift */,
 				C1356E9F25B8A89F00C7368D /* SettingsSwiftUIView.swift */,
-				C172FCFF2697AAE400F43629 /* TutorialSwiftUIView.swift */,
+				C1D26C8826A895B1000AE7BB /* TutorialView */,
 				C1DEF49F25B4C3570052B593 /* MedicationDetailSwiftUIView.swift */,
 				C14B995E25B4B2D3003C83B9 /* AddMedicationSwiftUIView.swift */,
 				C1DEF4A325B4C5E40052B593 /* EditMedicationSwiftUIView.swift */,
@@ -136,6 +148,7 @@
 				C1531F7525C8CBF7008DADE2 /* UserSettings.swift */,
 				C172FD012697B40E00F43629 /* EmailHelper.swift */,
 				C1C4ED2326A5FDC8009AAE79 /* MedicationModels.swift */,
+				C1D26C8D26A89972000AE7BB /* TutorialModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -151,6 +164,19 @@
 				C1D26C8626A86637000AE7BB /* MedicationManager.swift */,
 			);
 			path = Managers;
+			sourceTree = "<group>";
+		};
+		C1D26C8826A895B1000AE7BB /* TutorialView */ = {
+			isa = PBXGroup;
+			children = (
+				C172FCFF2697AAE400F43629 /* TutorialSwiftUIView.swift */,
+				C1D26C8926A895C1000AE7BB /* GradientView.swift */,
+				C1D26C8B26A898B8000AE7BB /* PageTabView.swift */,
+				C1D26C8F26A89AE5000AE7BB /* TabDetailsView.swift */,
+				C1D26C9126A89D8F000AE7BB /* ButtonsView.swift */,
+				C1D26C9326A89FCF000AE7BB /* StartButtonView.swift */,
+			);
+			path = TutorialView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -227,22 +253,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1D26C9426A89FCF000AE7BB /* StartButtonView.swift in Sources */,
 				C1DEF4A425B4C5E40052B593 /* EditMedicationSwiftUIView.swift in Sources */,
 				C1356EAE25B8ADB200C7368D /* Landmark.swift in Sources */,
+				C1D26C8A26A895C1000AE7BB /* GradientView.swift in Sources */,
 				C1D26C8726A86637000AE7BB /* MedicationManager.swift in Sources */,
 				C1C4ED2626A607C9009AAE79 /* NotificationManager.swift in Sources */,
 				C1DEF4A025B4C3580052B593 /* MedicationDetailSwiftUIView.swift in Sources */,
+				C1D26C9226A89D8F000AE7BB /* ButtonsView.swift in Sources */,
 				C1356EA425B8ABDB00C7368D /* LocationManager.swift in Sources */,
 				C1356EB625B8AE5000C7368D /* PlaceListView.swift in Sources */,
 				C1356EB525B8AE5000C7368D /* MapView.swift in Sources */,
 				C1B462CF25BA2D61008B6714 /* WebView.swift in Sources */,
 				C14B995F25B4B2D3003C83B9 /* AddMedicationSwiftUIView.swift in Sources */,
+				C1D26C8E26A89972000AE7BB /* TutorialModel.swift in Sources */,
 				C172FD002697AAE400F43629 /* TutorialSwiftUIView.swift in Sources */,
+				C1D26C8C26A898B8000AE7BB /* PageTabView.swift in Sources */,
 				C1356E9D25B8A89400C7368D /* MapSwiftUIView.swift in Sources */,
 				C10B907825B4A9CA00936503 /* MedControl.xcdatamodeld in Sources */,
 				C14B995C25B4AB16003C83B9 /* Persistance.swift in Sources */,
 				C1356EB125B8ADBD00C7368D /* LandmarkAnnotation.swift in Sources */,
 				C10B905F25B4A8FE00936503 /* ContentView.swift in Sources */,
+				C1D26C9026A89AE5000AE7BB /* TabDetailsView.swift in Sources */,
 				C172FD022697B40E00F43629 /* EmailHelper.swift in Sources */,
 				C1C4ED2426A5FDC8009AAE79 /* MedicationModels.swift in Sources */,
 				C1531F7625C8CBF7008DADE2 /* UserSettings.swift in Sources */,

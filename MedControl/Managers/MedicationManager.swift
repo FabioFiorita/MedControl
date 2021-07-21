@@ -136,7 +136,7 @@ final class MedicationManager: ObservableObject {
         if let timeIntervalDate = medication.date?.timeIntervalSince(historic.dates ?? Date()) {
             timeIntervalComparation = timeIntervalDate
         }
-        if timeIntervalComparation < -10.0 {
+        if timeIntervalComparation < -900.0 {
             historic.medicationStatus = "Atrasado"
         } else {
             historic.medicationStatus = "Sem Atraso"
