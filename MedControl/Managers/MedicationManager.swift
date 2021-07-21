@@ -86,6 +86,7 @@ final class MedicationManager: ObservableObject {
                     let dateMatching = Calendar.current.dateComponents([.hour,.minute], from: userSettings.limitDate)
                     let hour = dateMatching.hour
                     let minute = dateMatching.minute
+                    notificationManager.deleteLocalNotifications(identifiers: [identifier])
                     notificationManager.createLocalNotificationByDateMatching(identifier: identifier, title: "Comprar \(medication.name ?? "Medicamento")", hour: hour ?? 12, minute: minute ?? 00) { error in
                         if error == nil {
                             print("Notificação criada com id: \(identifier)")
