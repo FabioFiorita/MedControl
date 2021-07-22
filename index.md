@@ -6,7 +6,7 @@ MedControl tem como objetivo ajudar pessoas a controlar seus medicamentos, por m
 
 ### Interface
 
-<a href="https://imgur.com/YZZpXYM"><img src="https://i.imgur.com/YZZpXYMl.png" title="source: imgur.com" /></a> <a href="https://imgur.com/uNNYpCQ"><img src="https://i.imgur.com/uNNYpCQl.png" title="source: imgur.com" /></a> <a href="https://imgur.com/LBMGgKw"><img src="https://i.imgur.com/LBMGgKwl.png" title="source: imgur.com" /></a> <a href="https://imgur.com/bIUF3Ui"><img src="https://i.imgur.com/bIUF3Uil.png" title="source: imgur.com" /></a> <a href="https://imgur.com/OuTgML8"><img src="https://i.imgur.com/OuTgML8l.png" title="source: imgur.com" /></a> <a href="https://imgur.com/e5znmCC"><img src="https://i.imgur.com/e5znmCCl.png" title="source: imgur.com" /></a>
+<a href="https://imgur.com/YZZpXYM"><img src="https://i.imgur.com/YZZpXYMl.png" title="source: imgur.com" /></a> <a href="https://imgur.com/uNNYpCQ"><img src="https://i.imgur.com/uNNYpCQl.png" title="source: imgur.com" /></a> <a href="https://imgur.com/LBMGgKw"><img src="https://i.imgur.com/LBMGgKwl.png" title="source: imgur.com" /></a> <a href="https://imgur.com/bIUF3Ui"><img src="https://i.imgur.com/bIUF3Uil.png" title="source: imgur.com" /></a> <a href="https://imgur.com/tI232q2"><img src="https://i.imgur.com/tI232q2l.png" title="source: imgur.com" /></a> <a href="https://imgur.com/e5znmCC"><img src="https://i.imgur.com/e5znmCCl.png" title="source: imgur.com" /></a>
 
 ## Funcionalidades existentes
 
