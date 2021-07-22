@@ -22,3 +22,7 @@ MedControl tem como objetivo ajudar pessoas a controlar seus medicamentos, por m
 ### Para sugestões, problemas ou perguntas
 
 ### Contato: fabiolfp@gmail.com
+
+### [Política de Privacidade](https://raw.githubusercontent.com/FabioFiorita/MedControl/main/Privacy%20Policy)
+
+### [Termos de Uso](https://raw.githubusercontent.com/FabioFiorita/MedControl/main/Terms%20%26%20Conditions)
