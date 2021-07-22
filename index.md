@@ -2,11 +2,11 @@
 
 MedControl tem como objetivo ajudar pessoas a controlar seus medicamentos, por meio dele o usuário consegue receber notificações, alertas se o medicamento estiver acabando e é preciso comprar mais e visualizar um mapa com todas as farmácias próximas da sua localização.
 
-<img src="https://github.com/FabioFiorita/MedControl/blob/e85f782d6ccc8885ad847dcc6ccec51202b397d4/images/Logo.jpg" width="300">
+![MedControl Logo](images/Logo.jpg)
 
 ### Interface
 
-<img src="https://github.com/FabioFiorita/MedControl/blob/e85f782d6ccc8885ad847dcc6ccec51202b397d4/images/opening.PNG" width="300"> <img src="https://github.com/FabioFiorita/MedControl/blob/e85f782d6ccc8885ad847dcc6ccec51202b397d4/images/list.PNG" width="300"> <img src="https://github.com/FabioFiorita/MedControl/blob/e85f782d6ccc8885ad847dcc6ccec51202b397d4/images/detail.PNG" width="300"> <img src="https://github.com/FabioFiorita/MedControl/blob/e85f782d6ccc8885ad847dcc6ccec51202b397d4/images/add.PNG" width="300"> <img src="https://github.com/FabioFiorita/MedControl/blob/e85f782d6ccc8885ad847dcc6ccec51202b397d4/images/map.PNG" width="300"> <img src="https://github.com/FabioFiorita/MedControl/blob/e85f782d6ccc8885ad847dcc6ccec51202b397d4/images/settings.PNG" width="300">
+![Tela de abertura](images/opening.PNG) ![Tela da lista de medicamento](images/list.PNG) ![Tela de detalhes do medicamento](images/detail.PNG) ![Tela de adição de novo medicamento](images/add.PNG) ![Tela do mapa com as farmácias próximas](images/map.PNG) ![Tela de ajustes](images/settings.PNG) 
 
 ## Funcionalidades existentes
 
