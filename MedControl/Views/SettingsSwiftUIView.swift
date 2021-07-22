@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct SettingsSwiftUIView: View {
     
@@ -15,23 +16,27 @@ struct SettingsSwiftUIView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var isWalkthroughViewShowing = false
     
+    
     var body: some View {
         NavigationView {
             ZStack {
                 Color(colorScheme == .dark ? .systemBackground : .systemGray6)
-                VStack(alignment: .leading, spacing: 50.0) {
-                    VStack(alignment: .leading, spacing: 5.0) {
-                        medicationAlertSettings
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 50.0) {
+                        VStack(alignment: .leading, spacing: 5.0) {
+                            medicationAlertSettings
+                        }
+                        .padding()
+                        .background(Color(colorScheme == .dark ? .systemGray6 : .systemBackground))
+                        .cornerRadius(10.0)
+                        links
+                        policies
+                        Spacer()
                     }
+                    .navigationBarTitle("Ajustes")
                     .padding()
-                    .background(Color(colorScheme == .dark ? .systemGray6 : .systemBackground))
                     .cornerRadius(10.0)
-                    links
-                    Spacer()
                 }
-                .navigationBarTitle("Ajustes")
-                .padding()
-                .cornerRadius(10.0)
             }
         }
     }
@@ -48,49 +53,71 @@ struct SettingsSwiftUIView: View {
     }
     
     private var links: some View {
-        VStack(alignment: .leading, spacing: 20.0) {
-            HStack {
-                Button(action: {
-                    openURL(URL(string: "https://github.com/FabioFiorita/MedControl")!)
-                }) {
-                    Text("Avalie!")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(Color.gray)
+        VStack(alignment: .leading, spacing: 15.0) {
+            Button(action: {
+                if let scene = UIApplication.shared.connectedScenes.first(where: {$0.activationState == .foregroundActive}) as? UIWindowScene {
+                    SKStoreReviewController.requestReview(in: scene)
                 }
+            }) {
+                Text("Avalie!")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(Color.gray)
             }
             Divider()
             HStack {
                 NavigationLink("Tutorial", destination: TutorialSwiftUIView(isWalkthroughViewShowing: $isWalkthroughViewShowing))
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(Color.gray)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(Color.gray)
                 
                 
             }
             Divider()
-            HStack {
-                Button(action: {
-                    openURL(URL(string: "https://github.com/FabioFiorita/MedControl")!)
-                }) {
-                    Text("Código-Fonte")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(Color.gray)
-                }
+            Button(action: {
+                openURL(URL(string: "https://github.com/FabioFiorita/MedControl")!)
+            }) {
+                Text("Código-Fonte")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(Color.gray)
             }
             Divider()
-            HStack {
-                Button(action: {
-                    EmailHelper.shared.sendEmail(subject: "", body: "", to: "fabiolfp@gmail.com")
-                }) {
-                    Text("Fale Conosco")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(Color.gray)
-                }
-                
+            Button(action: {
+                EmailHelper.shared.sendEmail(subject: "", body: "", to: "fabiolfp@gmail.com")
+            }) {
+                Text("Fale Conosco")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(Color.gray)
             }
+            
+            
+            
+        }
+        .padding()
+        .background(Color(colorScheme == .dark ? .systemGray6 : .systemBackground))
+        .cornerRadius(10.0)
+    }
+    private var policies: some View {
+        VStack(alignment: .leading, spacing: 15.0) {
+            Button(action: {
+                openURL(URL(string: "https://raw.githubusercontent.com/FabioFiorita/MedControl/main/Terms%20%26%20Conditions")!)
+            }) {
+                Text("Termos de Uso")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(Color.gray)
+            }
+            Divider()
+            Button(action: {
+                openURL(URL(string: "https://raw.githubusercontent.com/FabioFiorita/MedControl/main/Terms%20%26%20Conditions")!)
+            }, label: {
+                Text("Política de Privacidade")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(Color.gray)
+            })
         }
         .padding()
         .background(Color(colorScheme == .dark ? .systemGray6 : .systemBackground))
