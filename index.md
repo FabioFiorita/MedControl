@@ -2,11 +2,11 @@
 
 MedControl tem como objetivo ajudar pessoas a controlar seus medicamentos, por meio dele o usuário consegue receber notificações, alertas se o medicamento estiver acabando e é preciso comprar mais e visualizar um mapa com todas as farmácias próximas da sua localização.
 
-![MedControl Logo](images/Logo.jpg)
+<img src="/images/Logo.jpg" width="300">
 
 ### Interface
 
-![Tela de abertura](images/opening.PNG) ![Tela da lista de medicamento](images/list.PNG) ![Tela de detalhes do medicamento](images/detail.PNG) ![Tela de adição de novo medicamento](images/add.PNG) ![Tela do mapa com as farmácias próximas](images/map.PNG) ![Tela de ajustes](images/settings.PNG) 
+<img src="/images/opening.PNG" width="300"> <img src="/images/list.PNG" width="300"> <img src="/images/detail.PNG" width="300"> <img src="/images/add.PNG" width="300"> <img src="/images/map.PNG" width="300"> <img src="/images/settings.PNG" width="300">
 
 ## Funcionalidades existentes
 
@@ -22,4 +22,3 @@ MedControl tem como objetivo ajudar pessoas a controlar seus medicamentos, por m
 ### Para sugestões, problemas ou perguntas
 
 ### Contato: fabiolfp@gmail.com
-
