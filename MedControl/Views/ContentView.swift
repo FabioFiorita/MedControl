@@ -40,72 +40,72 @@ struct ContentView: View {
             if isWalkthroughViewShowing {
                 TutorialSwiftUIView(isWalkthroughViewShowing: $isWalkthroughViewShowing)
             } else {
-            TabView {
-                NavigationView {
-                    List {
-                        ForEach(medications, id: \.self) { (medication: Medication) in
-                            row(forMedication: medication)
+                TabView {
+                    NavigationView {
+                        List {
+                            ForEach(medications, id: \.self) { (medication: Medication) in
+                                row(forMedication: medication)
+                            }
+                            .onDelete(perform: deleteMedication)
                         }
-                        .onDelete(perform: deleteMedication)
-                    }
-                    .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
-                    .navigationBarItems(trailing:
-                                            Button(action: {
-                                                self.showModalAdd = true
-                                            }) {
-                                                Image(systemName: "plus").imageScale(.large).foregroundColor(.white)
-                                            }.sheet(isPresented: self.$showModalAdd) {
-                                                AddMedicationSwiftUIView()
-                                            }
-                    )
-                    .listStyle(InsetGroupedListStyle())
-                    .onAppear(perform: {
-                        notificationManager.reloadAuthorizationStatus()
-                        UNUserNotificationCenter.current().delegate = delegate
-                    })
-                    .onChange(of: notificationManager.authorizationStatus) { authorizationStatus in
-                        switch authorizationStatus {
-                        case .notDetermined:
-                            notificationManager.requestAuthorization()
-                        case .authorized:
-                            notificationManager.reloadLocalNotifications()
-                        case .denied:
-                            self.authorizationDenied = true
-                        default:
-                            break
+                        .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
+                        .navigationBarItems(trailing:
+                                                Button(action: {
+                                                    self.showModalAdd = true
+                                                }) {
+                                                    Image(systemName: "plus").imageScale(.large).foregroundColor(.white)
+                                                }.sheet(isPresented: self.$showModalAdd) {
+                                                    AddMedicationSwiftUIView()
+                                                }
+                        )
+                        .listStyle(InsetGroupedListStyle())
+                        .onAppear(perform: {
+                            notificationManager.reloadAuthorizationStatus()
+                            UNUserNotificationCenter.current().delegate = delegate
+                        })
+                        .onChange(of: notificationManager.authorizationStatus) { authorizationStatus in
+                            switch authorizationStatus {
+                            case .notDetermined:
+                                notificationManager.requestAuthorization()
+                            case .authorized:
+                                notificationManager.reloadLocalNotifications()
+                            case .denied:
+                                self.authorizationDenied = true
+                            default:
+                                break
+                            }
                         }
-                    }
-                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                        notificationManager.reloadAuthorizationStatus()
-                    }
-                    .alert(isPresented: $authorizationDenied) {
-                        Alert(
+                        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                            notificationManager.reloadAuthorizationStatus()
+                        }
+                        .alert(isPresented: $authorizationDenied) {
+                            Alert(
                                 title: Text("Notificações desativadas"),
                                 message: Text("Abra o App Ajustes e habilite as notificações para monitorar seus medicamentos"),
                                 primaryButton: .cancel(Text("Cancelar")),
                                 secondaryButton: .default(Text("Abrir Ajustes"), action: {
-                                  if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
-                                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                                  }
+                                    if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
+                                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                    }
                                 }))
+                        }
                     }
-                }
-                .accentColor(.white)
-                .tabItem {
-                    Image(systemName: "pills")
-                    Text("Medicamentos")
-                }
-                MapSwiftUIView()
+                    .accentColor(.white)
                     .tabItem {
-                        Image(systemName: "map")
-                        Text("Mapa")
+                        Image(systemName: "pills")
+                        Text("Medicamentos")
                     }
-                SettingsSwiftUIView()
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("Ajustes")
-                    }
-            }
+                    MapSwiftUIView()
+                        .tabItem {
+                            Image(systemName: "map")
+                            Text("Mapa")
+                        }
+                    SettingsSwiftUIView()
+                        .tabItem {
+                            Image(systemName: "gear")
+                            Text("Ajustes")
+                        }
+                }
             }
         }
     }
@@ -113,8 +113,10 @@ struct ContentView: View {
     
     private func deleteMedication(offsets: IndexSet) {
         withAnimation {
-            offsets.map{ medications[$0] }.forEach(viewContext.delete)
-            medicationManager.saveContext(viewContext: viewContext)
+            for index in offsets {
+                let medication = medications[index]
+                medicationManager.deleteMedication(medication: medication, viewContext: viewContext)
+            }
         }
     }
     
@@ -144,18 +146,18 @@ struct ContentView: View {
             }
             .alert(isPresented: $showTimeIntervalAlert, content: {
                 Alert(
-                        title: Text("Erro na hora de agendar a notificação"),
-                        message: Text("A próxima notificação foi agendada para o próximo horário da repetição a partir da hora atual"),
-                        primaryButton: .cancel(Text("Cancelar")),
-                        secondaryButton: .default(Text("Editar Medicamento")) {
-                            self.showModalEdit = true
-                        }
+                    title: Text("Erro na hora de agendar a notificação"),
+                    message: Text("Configure a Data de início novamente"),
+                    primaryButton: .cancel(Text("Cancelar")),
+                    secondaryButton: .default(Text("Editar Medicamento")) {
+                        self.showModalEdit = true
+                    }
                 )
             })
             .sheet(isPresented: $showModalEdit) {
                 EditMedicationSwiftUIView(medication: medication)
             }
-            
+        
     }
     private func medicationName(forMedication medication: Medication) -> some View {
         Text(medication.name ?? "Untitled").font(.title)

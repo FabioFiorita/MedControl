@@ -65,7 +65,7 @@ final class NotificationManager: ObservableObject {
         
         let request = UNNotificationRequest(identifier: identifier, content: notificationContent, trigger: trigger)
         UNUserNotificationCenter.current().add(request, withCompletionHandler: completion)
-        //print("Notificação: \(identifier) e titulo \(notificationContent.title) criada!")
+        print("Notificação: \(identifier) e titulo \(notificationContent.title) criada!")
     }
     
     func deleteLocalNotifications(identifiers: [String]) {

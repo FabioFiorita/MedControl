@@ -21,6 +21,7 @@ final class MedicationManager: ObservableObject {
         }
     }
     
+    
     func addMedication(name: String, remainingQuantity: Int32, boxQuantity: Int32, date: Date, repeatPeriod: String, notes: String, notificationType: String, viewContext: NSManagedObjectContext) {
         
         let newMedication = Medication(context: viewContext)
@@ -76,12 +77,18 @@ final class MedicationManager: ObservableObject {
         saveContext(viewContext: viewContext)
     }
     
+    func deleteMedication(medication: Medication, viewContext: NSManagedObjectContext) {
+        guard let identifier = medication.id else {return}
+        let identifierRepeat = (medication.id ?? UUID().uuidString) + "-Repiting"
+        notificationManager.deleteLocalNotifications(identifiers: [identifier, identifierRepeat])
+        viewContext.delete(medication)
+    }
+    
     func updateRemainingQuantity(medication: Medication, viewContext: NSManagedObjectContext) -> Bool {
         var success = true
         if medication.remainingQuantity > 1 {
             if Double(medication.remainingQuantity) <= Double(medication.boxQuantity) * (userSettings.limitMedication/100.0) {
                 if userSettings.limitNotification {
-                    print("Entrou aqui!!!!!!!!!!")
                     let identifier = (medication.id ?? UUID().uuidString) + "-Repiting"
                     let dateMatching = Calendar.current.dateComponents([.hour,.minute], from: userSettings.limitDate)
                     let hour = dateMatching.hour
@@ -99,8 +106,9 @@ final class MedicationManager: ObservableObject {
             let historic = Historic(context: viewContext)
             historic.dates = Date()
             historic.medication = medication
-            
-            rescheduleNotification(forMedication: medication, forHistoric: historic)
+            if !(medication.repeatPeriod == "Nunca") {
+                rescheduleNotification(forMedication: medication, forHistoric: historic)
+            }
             
             if historic.medicationStatus == "Não tomou" {
                 success = false
@@ -156,7 +164,7 @@ final class MedicationManager: ObservableObject {
         var seconds = 3.0
         switch time {
         case "Nunca":
-            seconds = 60.0
+            seconds = 0.0
         case "15 minutos":
             seconds = 900.0
         case "30 minutos":

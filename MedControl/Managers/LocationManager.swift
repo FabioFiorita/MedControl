@@ -14,30 +14,35 @@ class LocationManager: NSObject, ObservableObject {
     @Published var location: CLLocation? = nil
     
     override init() {
-        
         super.init()
-        self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        self.locationManager.distanceFilter = kCLDistanceFilterNone
-        self.locationManager.requestWhenInUseAuthorization()
-        self.locationManager.startUpdatingLocation()
-        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = kCLDistanceFilterNone
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    func stopUpdates() {
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func startUpdates() {
+        locationManager.startUpdatingLocation()
     }
     
 }
 
 extension LocationManager: CLLocationManagerDelegate {
     
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        print(status)
-    }
-    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
         guard let location = locations.last else {
             return
         }
         
-        self.location = location
+        DispatchQueue.main.async {
+            self.location = location
+        }
     }
     
 }
