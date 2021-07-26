@@ -170,26 +170,34 @@ final class MedicationManager: ObservableObject {
         switch time {
         case "Nunca":
             seconds = 0.0
-        case "15 minutos":
-            seconds = 900.0
-        case "30 minutos":
-            seconds = 1800.0
         case "1 hora":
             seconds = 3600.0
         case "2 horas":
             seconds = 7200.0
         case "4 horas":
             seconds = 14400.0
+        case "6 horas":
+            seconds = 21600.0
         case "8 horas":
             seconds = 28800.0
         case "12 horas":
             seconds = 43200.0
         case "1 dia":
             seconds = 86400.0
+        case "2 dias":
+            seconds = 172800.0
+        case "5 dias":
+            seconds = 432000.0
         case "1 semana":
             seconds = 604800.0
+        case "2 semanas":
+            seconds = 1209600.0
         case "1 mês":
             seconds = 2419200.0
+        case "3 meses":
+            seconds = 72576000.0
+        case "6 meses":
+            seconds = 145152000.0
         default:
             break
         }

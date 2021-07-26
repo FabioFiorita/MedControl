@@ -70,7 +70,8 @@ final class NotificationManager: ObservableObject {
     
     func deleteLocalNotifications(identifiers: [String]) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
-        print("Notificação: \(identifiers.first ?? "") deletada!")
+        print("Notificação: \(identifiers.first ?? "" ) deletada!")
+        print("Notificação: \(identifiers.last ?? "" ) deletada!")
     }
 }
 

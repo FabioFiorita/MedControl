@@ -16,6 +16,7 @@ struct PageTabView: View {
             }
         }
         .tabViewStyle(PageTabViewStyle())
+        .padding(.horizontal)
     }
 }
 
