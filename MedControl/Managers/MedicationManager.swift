@@ -89,6 +89,10 @@ final class MedicationManager: ObservableObject {
         if medication.remainingQuantity > 1 {
             if Double(medication.remainingQuantity) <= Double(medication.boxQuantity) * (userSettings.limitMedication/100.0) {
                 if userSettings.limitNotification {
+                    print("USERDEFAULTS-----------")
+                    print(userSettings.limitNotification)
+                    print(userSettings.limitMedication)
+                    print("---------------------------")
                     let identifier = (medication.id ?? UUID().uuidString) + "-Repiting"
                     let dateMatching = Calendar.current.dateComponents([.hour,.minute], from: userSettings.limitDate)
                     let hour = dateMatching.hour
@@ -113,11 +117,12 @@ final class MedicationManager: ObservableObject {
             if historic.medicationStatus == "Não tomou" {
                 success = false
             }
+            saveContext(viewContext: viewContext)
+            success = true
         } else {
-            viewContext.delete(medication)
+            deleteMedication(medication: medication, viewContext: viewContext)
+            success = false
         }
-        saveContext(viewContext: viewContext)
-        
         return success
     }
     
