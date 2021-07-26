@@ -106,11 +106,11 @@
 		C10B905B25B4A8FE00936503 /* MedControl */ = {
 			isa = PBXGroup;
 			children = (
-				C124EECB26A9DE0E00A801CA /* Extensions */,
 				C10B905C25B4A8FE00936503 /* MedControlApp.swift */,
 				C1356EA625B8AD6000C7368D /* Views */,
 				C1356EA925B8AD8E00C7368D /* Models */,
 				C1356EAB25B8AD9C00C7368D /* Managers */,
+				C124EECB26A9DE0E00A801CA /* Extensions */,
 				C10B906025B4A8FF00936503 /* Assets.xcassets */,
 				C10B906525B4A8FF00936503 /* Info.plist */,
 				C10B907625B4A9CA00936503 /* MedControl.xcdatamodeld */,
@@ -149,10 +149,10 @@
 			isa = PBXGroup;
 			children = (
 				C124EECE26A9DE8F00A801CA /* MapView */,
+				C1D26C8826A895B1000AE7BB /* TutorialView */,
 				C10B905E25B4A8FE00936503 /* ContentView.swift */,
 				C1356E9C25B8A89400C7368D /* MapSwiftUIView.swift */,
 				C1356E9F25B8A89F00C7368D /* SettingsSwiftUIView.swift */,
-				C1D26C8826A895B1000AE7BB /* TutorialView */,
 				C1DEF49F25B4C3570052B593 /* MedicationDetailSwiftUIView.swift */,
 				C14B995E25B4B2D3003C83B9 /* AddMedicationSwiftUIView.swift */,
 				C1DEF4A325B4C5E40052B593 /* EditMedicationSwiftUIView.swift */,
@@ -430,7 +430,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"MedControl/Preview Content\"";
 				DEVELOPMENT_TEAM = 9QH8M89WF9;
 				ENABLE_PREVIEWS = YES;
@@ -440,7 +440,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.3.0;
+				MARKETING_VERSION = 0.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fabiofiorita.MedControl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -454,7 +454,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"MedControl/Preview Content\"";
 				DEVELOPMENT_TEAM = 9QH8M89WF9;
 				ENABLE_PREVIEWS = YES;
@@ -464,7 +464,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.3.0;
+				MARKETING_VERSION = 0.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.fabiofiorita.MedControl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

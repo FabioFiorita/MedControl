@@ -15,7 +15,10 @@ struct SettingsSwiftUIView: View {
     @Environment(\.openURL) var openURL
     @Environment(\.colorScheme) var colorScheme
     @State private var isWalkthroughViewShowing = false
-    
+    @State private var limitNotification = true
+    @State private var limitMedication = 20.0
+    @State private var limitDate = Date()
+    @State private var didSave = false
     
     var body: some View {
         NavigationView {
@@ -41,14 +44,35 @@ struct SettingsSwiftUIView: View {
         }
     }
     private var medicationAlertSettings: some View {
-        Group {
-            Toggle(isOn: $userSettings.limitNotification) {
+        VStack(alignment: .leading, spacing: 10.0) {
+            Toggle(isOn: $limitNotification) {
                 Text("Deseja ser notificado quando estiver acabando seus remédios?")
             }
-            Stepper(value: $userSettings.limitMedication, in: 0.0...100.0) {
-                Text("Começar a notificar quando a quantidade chegar em: ") + Text("\(Int(userSettings.limitMedication))%").foregroundColor(.red).bold() + Text(" do total")
+            Stepper(value: $limitMedication, in: 0.0...100.0) {
+                Text("Começar a notificar quando a quantidade chegar em: ") + Text("\(Int(limitMedication))%").foregroundColor(.red).bold() + Text(" do total")
             }
-            DatePicker("Horario para as notificações:", selection: $userSettings.limitDate, displayedComponents: .hourAndMinute)
+            DatePicker("Horario para as notificações:", selection: $limitDate, displayedComponents: .hourAndMinute)
+            Button(action: {
+                userSettings.limitNotification = limitNotification
+                userSettings.limitMedication = limitMedication
+                userSettings.limitDate = limitDate
+                didSave = true
+            }) {
+                Text("Salvar Configurações")
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                    .padding()
+                    .background(Color("main"))
+                    .cornerRadius(10.0)
+                    .foregroundColor(.white)
+            }
+            .alert(isPresented: $didSave, content: {
+                Alert(title: Text("Configurações atualizadas com sucesso"), message: nil, dismissButton: .cancel(Text("OK")))
+            })
+        }
+        .onAppear {
+            self.limitNotification = self.userSettings.limitNotification
+            self.limitMedication = self.userSettings.limitMedication
+            self.limitDate = self.userSettings.limitDate
         }
     }
     
