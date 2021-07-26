@@ -20,9 +20,10 @@ struct ContentView: View {
     @FetchRequest(entity: Medication.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Medication.date, ascending: true)])
     private var medications: FetchedResults<Medication>
     @StateObject private var notificationManager = NotificationManager()
-    
+    @StateObject private var delegate = NotificationDelegate()
     @ObservedObject var userSettings = UserSettings()
-    
+    @StateObject private var medicationManager = MedicationManager()
+    @AppStorage("TutorialView") var isWalkthroughViewShowing = true
     
     init(){
         //UITableView.appearance().backgroundColor = UIColor(colorScheme == .dark ? Color.black : Color(.systemGray6))
@@ -35,134 +36,97 @@ struct ContentView: View {
     }
     
     var body: some View {
-        TabView {
-            NavigationView {
-                List {
-                    ForEach(medications, id: \.self) { (medication: Medication) in
-                        row(forMedication: medication)
+        Group {
+            if isWalkthroughViewShowing {
+                TutorialSwiftUIView(isWalkthroughViewShowing: $isWalkthroughViewShowing)
+            } else {
+                TabView {
+                    NavigationView {
+                        List {
+                            ForEach(medications, id: \.self) { (medication: Medication) in
+                                row(forMedication: medication)
+                            }
+                            .onDelete(perform: deleteMedication)
+                        }
+                        .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
+                        .navigationBarItems(trailing:
+                                                Button(action: {
+                                                    self.showModalAdd = true
+                                                }) {
+                                                    Image(systemName: "plus").imageScale(.large).foregroundColor(.white)
+                                                }.sheet(isPresented: self.$showModalAdd) {
+                                                    AddMedicationSwiftUIView()
+                                                }
+                        )
+                        .listStyle(InsetGroupedListStyle())
+                        .onAppear(perform: {
+                            notificationManager.reloadAuthorizationStatus()
+                            UNUserNotificationCenter.current().delegate = delegate
+                        })
+                        .onChange(of: notificationManager.authorizationStatus) { authorizationStatus in
+                            switch authorizationStatus {
+                            case .notDetermined:
+                                notificationManager.requestAuthorization()
+                            case .authorized:
+                                notificationManager.reloadLocalNotifications()
+                            case .denied:
+                                self.authorizationDenied = true
+                            default:
+                                break
+                            }
+                        }
+                        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                            notificationManager.reloadAuthorizationStatus()
+                        }
+                        .alert(isPresented: $authorizationDenied) {
+                            Alert(
+                                title: Text("Notificações desativadas"),
+                                message: Text("Abra o App Ajustes e habilite as notificações para monitorar seus medicamentos"),
+                                primaryButton: .cancel(Text("Cancelar")),
+                                secondaryButton: .default(Text("Abrir Ajustes"), action: {
+                                    if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
+                                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                    }
+                                }))
+                        }
                     }
-                    .onDelete(perform: deleteMedication)
-                }
-                .navigationBarTitle(Text(verbatim: "Medicamentos"),displayMode: .inline)
-                .navigationBarItems(trailing:
-                                        Button(action: {
-                                            self.showModalAdd = true
-                                        }) {
-                                            Image(systemName: "plus").imageScale(.large).foregroundColor(.white)
-                                        }.sheet(isPresented: self.$showModalAdd) {
-                                            AddMedicationSwiftUIView()
-                                        }
-                )
-                .listStyle(InsetGroupedListStyle())
-                .onAppear(perform: notificationManager.reloadAuthorizationStatus)
-                .onChange(of: notificationManager.authorizationStatus) { authorizationStatus in
-                    switch authorizationStatus {
-                    case .notDetermined:
-                        notificationManager.requestAuthorization()
-                    case .authorized:
-                        notificationManager.reloadLocalNotifications()
-                    case .denied:
-                        self.authorizationDenied = true
-                    default:
-                        break
+                    .accentColor(.white)
+                    .tabItem {
+                        Image(systemName: "pills")
+                        Text("Medicamentos")
                     }
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                    notificationManager.reloadAuthorizationStatus()
-                }
-                .alert(isPresented: $authorizationDenied) {
-                    Alert(
-                            title: Text("Notificações desativadas"),
-                            message: Text("Abra o App Ajustes e habilite as notificações para monitorar seus medicamentos"),
-                            primaryButton: .cancel(Text("Cancelar")),
-                            secondaryButton: .default(Text("Abrir Ajustes"), action: {
-                              if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
-                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                              }
-                            }))
+                    MapSwiftUIView()
+                        .tabItem {
+                            Image(systemName: "map")
+                            Text("Mapa")
+                        }
+                    SettingsSwiftUIView()
+                        .tabItem {
+                            Image(systemName: "gear")
+                            Text("Ajustes")
+                        }
                 }
             }
-            .accentColor(.white)
-            .tabItem {
-                Image(systemName: "pills")
-                Text("Medicamentos")
-            }
-            MapSwiftUIView()
-                .tabItem {
-                    Image(systemName: "map")
-                    Text("Mapa")
-                }
-            SettingsSwiftUIView()
-                .tabItem {
-                    Image(systemName: "gear")
-                    Text("Ajustes")
-                }
         }
     }
     
-    private func saveContext() {
-        do {
-            try viewContext.save()
-        } catch {
-            let error = error as NSError
-            fatalError("Unresolved Error: \(error)")
-        }
-    }
     
     private func deleteMedication(offsets: IndexSet) {
         withAnimation {
-            offsets.map{ medications[$0] }.forEach(viewContext.delete)
-            saveContext()
+            for index in offsets {
+                let medication = medications[index]
+                medicationManager.deleteMedication(medication: medication, viewContext: viewContext)
+            }
         }
     }
     
     
     private func updateQuantity(medication: FetchedResults<Medication>.Element) {
         withAnimation {
-            if medication.remainingQuantity > 1 {
-                medication.remainingQuantity -= 1
-                
-                let historic = Historic(context: viewContext)
-                historic.dates = Date()
-                historic.medication = medication
-                
-                rescheduleNotification(forMedication: medication, forHistoric: historic)
-            } else {
-                viewContext.delete(medication)
+            let sucess = medicationManager.updateRemainingQuantity(medication: medication, viewContext: viewContext)
+            if !sucess {
+                self.showTimeIntervalAlert = true
             }
-            saveContext()
-        }
-    }
-    
-    private func rescheduleNotification(forMedication medication: Medication, forHistoric historic: Historic) {
-        medicationStatus(forMedication: medication, forHistoric: historic)
-        if medication.notificationType == "Regularmente" {
-            medication.date = Date(timeInterval: medication.repeatSeconds, since: medication.date ?? Date())
-        } else {
-            medication.date = Date(timeIntervalSinceNow: medication.repeatSeconds)
-        }
-        guard let timeInterval = medication.date?.timeIntervalSinceNow else {return}
-        guard let identifier = medication.id else {return}
-        if timeInterval > 0 {
-            notificationManager.deleteLocalNotifications(identifiers: [identifier])
-            notificationManager.createLocalNotificationByTimeInterval(identifier: identifier, title: "Tomar \(medication.name ?? "Medicamento")", timeInterval: timeInterval) { error in
-                if error == nil {}
-            }
-        } else {
-            historic.medicationStatus = "Não tomou"
-            self.showTimeIntervalAlert = true
-        }
-    }
-    
-    private func medicationStatus(forMedication medication: Medication, forHistoric historic: Historic) {
-        var timeIntervalComparation = 0.0
-        if let timeIntervalDate = medication.date?.timeIntervalSince(historic.dates ?? Date()) {
-            timeIntervalComparation = timeIntervalDate
-        }
-        if timeIntervalComparation < -10.0 {
-            historic.medicationStatus = "Atrasado"
-        } else {
-            historic.medicationStatus = "Sem Atraso"
         }
     }
     
@@ -182,18 +146,18 @@ struct ContentView: View {
             }
             .alert(isPresented: $showTimeIntervalAlert, content: {
                 Alert(
-                        title: Text("Erro na hora de agendar a notificação"),
-                        message: Text("A próxima notificação foi agendada para o próximo horário da repetição a partir da hora atual"),
-                        primaryButton: .cancel(Text("Cancelar")),
-                        secondaryButton: .default(Text("Editar Medicamento")) {
-                            self.showModalEdit = true
-                        }
+                    title: Text("Erro na hora de agendar a notificação"),
+                    message: Text("Configure a Data de início novamente"),
+                    primaryButton: .cancel(Text("Cancelar")),
+                    secondaryButton: .default(Text("Editar Medicamento")) {
+                        self.showModalEdit = true
+                    }
                 )
             })
             .sheet(isPresented: $showModalEdit) {
                 EditMedicationSwiftUIView(medication: medication)
             }
-            
+        
     }
     private func medicationName(forMedication medication: Medication) -> some View {
         Text(medication.name ?? "Untitled").font(.title)

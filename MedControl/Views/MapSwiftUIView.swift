@@ -8,74 +8,71 @@
 import SwiftUI
 import MapKit
 
+enum DisplayType {
+    case map
+    case list
+}
+
 struct MapSwiftUIView: View {
-    @ObservedObject var locationManager = LocationManager()
-    @State private var landmarks: [Landmark] = [Landmark]()
-    @State private var search: String = ""
-    @State private var pharmacies: String = "Pharmacy"
-    @State private var tapped: Bool = false
+    @StateObject private var placeListVM = PlaceListViewModel()
+    @State private var userTrackingMode: MapUserTrackingMode = .follow
+    @State private var searchTerm: String = ""
+    @State private var displayType: DisplayType = .map
+    @State private var isDragged: Bool = false
     
-    
-    
-    private func getNearByLandmarks() {
+    private func getRegion() -> Binding<MKCoordinateRegion> {
         
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = pharmacies
+        guard let coordinate = placeListVM.currentLocation else {
+            return .constant(MKCoordinateRegion.defaultRegion)
+        }
         
-        let search = MKLocalSearch(request: request)
-        search.start { (response, error) in
-            if let response = response {
-                
-                let mapItems = response.mapItems
-                self.landmarks = mapItems.map {
-                    Landmark(placemark: $0.placemark)
+        return .constant(MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)))
+        
+    }
+    
+    var body: some View {
+        VStack {
+            VStack {
+                TextField("Buscar", text: $searchTerm, onEditingChanged: { _ in
                     
+                }, onCommit: {
+                        // get all landmarks
+                    placeListVM.searchLandmarks(searchTerm: searchTerm)
+                    
+                }).textFieldStyle(RoundedBorderTextFieldStyle())
+                
+                LandmarkCategoryView { (category) in
+                    placeListVM.searchLandmarks(searchTerm: category)
                 }
                 
+                Picker("Selecione", selection: $displayType) {
+                    Text("Mapa").tag(DisplayType.map)
+                    Text("Lista").tag(DisplayType.list)
+                }.pickerStyle(SegmentedPickerStyle())
+            }.padding()
+            if displayType == .map {
+                
+                Map(coordinateRegion: getRegion(), interactionModes: .all, showsUserLocation: true, userTrackingMode: $userTrackingMode, annotationItems: placeListVM.landmarks) { landmark in
+                    MapMarker(coordinate: landmark.coordinate)
+                }
+                .gesture(DragGesture()
+                            .onChanged({ (value) in
+                                isDragged = true
+                            })
+                )
+                .overlay(isDragged ? AnyView(RecenterButton {
+                    placeListVM.startUpdatingLocation()
+                    isDragged = false
+                }.padding()): AnyView(EmptyView()), alignment: .bottom)
+                
+                
+                
+            } else if displayType == .list {
+                LandmarkListView(landmarks: placeListVM.landmarks)
             }
             
         }
         
-    }
-    
-    func calculateOffset() -> CGFloat {
-        
-        if self.landmarks.count > 0 && !self.tapped {
-            return UIScreen.main.bounds.size.height - UIScreen.main.bounds.size.height / 4
-        }
-        else if self.tapped {
-            return 100
-        } else {
-            return UIScreen.main.bounds.size.height
-        }
-    }
-    
-    var body: some View {
-        ZStack(alignment: .top) {
-            
-            MapView(landmarks: landmarks).ignoresSafeArea(.all)
-            
-            
-            //            TextField("Pesquisar", text: $search, onEditingChanged: { _ in })
-            //            {
-            //                // commit
-            //                self.getNearByLandmarks()
-            //            }.textFieldStyle(RoundedBorderTextFieldStyle())
-            //                .padding()
-            //                .offset(y: 44)
-            
-            
-            PlaceListView(landmarks: self.landmarks) {
-                // on tap
-                self.tapped.toggle()
-            }.animation(.spring())
-            .offset(y: calculateOffset())
-            .padding(.vertical)
-            
-            
-        }.onAppear(perform: {
-            self.getNearByLandmarks()
-        })
     }
 }
 

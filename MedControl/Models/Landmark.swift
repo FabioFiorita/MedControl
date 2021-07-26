@@ -8,23 +8,22 @@
 import Foundation
 import MapKit
 
-struct Landmark {
+struct LandmarkViewModel: Identifiable {
     
     let placemark: MKPlacemark
     
-    var id: UUID {
-        return UUID()
-    }
+    let id = UUID()
     
     var name: String {
-        self.placemark.name ?? ""
+        placemark.name ?? ""
     }
     
     var title: String {
-        self.placemark.title ?? ""
+        placemark.title ?? ""
     }
     
     var coordinate: CLLocationCoordinate2D {
-        self.placemark.coordinate
+        placemark.coordinate
     }
+    
 }

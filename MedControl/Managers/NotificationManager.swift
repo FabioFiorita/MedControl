@@ -40,7 +40,7 @@ final class NotificationManager: ObservableObject {
         var dateComponents = DateComponents()
         dateComponents.hour = hour
         dateComponents.minute = minute
-        
+        print("HORA: \(String(describing: dateComponents.hour)) + MINUTO: \(String(describing: dateComponents.minute))")
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         
         let notificationContent = UNMutableNotificationContent()
@@ -65,11 +65,18 @@ final class NotificationManager: ObservableObject {
         
         let request = UNNotificationRequest(identifier: identifier, content: notificationContent, trigger: trigger)
         UNUserNotificationCenter.current().add(request, withCompletionHandler: completion)
-        //print("Notificação: \(identifier) e titulo \(notificationContent.title) criada!")
+        print("Notificação: \(identifier) e titulo \(notificationContent.title) criada!")
     }
     
     func deleteLocalNotifications(identifiers: [String]) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
-        //print("Notificação: \(identifiers.first ?? "") deletada!")
+        print("Notificação: \(identifiers.first ?? "") deletada!")
+    }
+}
+
+class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.badge,.banner,.sound])
     }
 }
