@@ -78,17 +78,17 @@ struct SettingsSwiftUIView: View {
     
     private var links: some View {
         VStack(alignment: .leading, spacing: 15.0) {
-            Button(action: {
-                if let scene = UIApplication.shared.connectedScenes.first(where: {$0.activationState == .foregroundActive}) as? UIWindowScene {
-                    SKStoreReviewController.requestReview(in: scene)
-                }
-            }) {
-                Text("Avalie!")
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundColor(Color.gray)
-            }
-            Divider()
+//            Button(action: {
+//                if let scene = UIApplication.shared.connectedScenes.first(where: {$0.activationState == .foregroundActive}) as? UIWindowScene {
+//                    SKStoreReviewController.requestReview(in: scene)
+//                }
+//            }) {
+//                Text("Avalie!")
+//                Spacer()
+//                Image(systemName: "chevron.right")
+//                    .foregroundColor(Color.gray)
+//            }
+//            Divider()
             HStack {
                 NavigationLink("Tutorial", destination: TutorialSwiftUIView(isWalkthroughViewShowing: $isWalkthroughViewShowing))
                 Spacer()

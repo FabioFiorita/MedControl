@@ -82,6 +82,7 @@ final class MedicationManager: ObservableObject {
         let identifierRepeat = (medication.id ?? UUID().uuidString) + "-Repiting"
         notificationManager.deleteLocalNotifications(identifiers: [identifier, identifierRepeat])
         viewContext.delete(medication)
+        saveContext(viewContext: viewContext)
     }
     
     func updateRemainingQuantity(medication: Medication, viewContext: NSManagedObjectContext) -> Bool {
