@@ -6,7 +6,7 @@ MedControl tem como objetivo ajudar pessoas a controlar seus medicamentos, por m
 
 ### Interface
 
-<img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/list.jpg" width="350"> <img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/detail.jpg" width="350"> <img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/map.jpg" width="350"> <img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/settings.jpg" width="350"> <img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/darkMode.jpg" width="350">
+<img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/list.jpg" width="350"> <img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/detail.jpg" width="350"> <img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/map.jpg" width="350"> <img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/settings.jpg" width="350"> <img src="https://raw.githubusercontent.com/FabioFiorita/MedControl/gh-pages/images/darkmode.jpg" width="350">
 
 ## Funcionalidades existentes
 
