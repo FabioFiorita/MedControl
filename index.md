@@ -1,4 +1,4 @@
-## MedControl - Controle de Medicamentos
+## MedControl
 
 MedControl tem como objetivo ajudar pessoas a controlar seus medicamentos, por meio dele o usuário consegue receber notificações, alertas se o medicamento estiver acabando e é preciso comprar mais e visualizar um mapa com todas as farmácias próximas da sua localização.
 
